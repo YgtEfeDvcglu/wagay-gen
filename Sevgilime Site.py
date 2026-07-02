@@ -18,7 +18,7 @@ TASKS = ["Türkçe Deneme", "Tarih/Matematik Deneme", "Alan", "Eğitim", "Coğra
 # alınan embed linki olmalı. Birden fazla slayt eklemek için listeye yeni
 # satır ekle.
 SLIDE_LINKS = [
-    "https://docs.google.com/presentation/d/e/2PACX-1vQSVFpm7jRLL1CQBxbTASl7MMa15zDlPK8qSQ52k-of1UgZgVlWWA8bSIoEcXk5wGkCrLkugHPpwD91/pub?start=false&loop=true&delayms=3000",
+    "https://docs.google.com/presentation/d/e/2PACX-1vQSVFpm7jRLL1CQBxbTASl7MMa15zDlPK8qSQ52k-of1UgZgVlWWA8bSIoEcXk5wGkCrLkugHPpwD91/pub?start=true&loop=true&delayms=4000",
     "https://docs.google.com/presentation/d/e/...senin_linkin_2.../embed",
 ]
 
