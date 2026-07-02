@@ -25,7 +25,7 @@ SLIDE_LINKS = [
 
 # YouTube "Liste Dışı" (Unlisted) video linkleri. İstediğin kadar ekleyebilirsin.
 VIDEO_LINKS = [
-    {"baslik": "İlk Videomuz", "link": "https://youtube.com/shorts/R80w7Ye5Qz0"},
+    {"baslik": "İlk Videomuz", "link": "https://youtube.com/shorts/R80w7Ye5Qz0?feature=share"},
 ]
 
 # Not kartları — 25-30'a tamamla. Her biri virgülle ayrılmış bir metin.
