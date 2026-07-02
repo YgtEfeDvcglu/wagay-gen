@@ -19,7 +19,7 @@ TASKS = ["Türkçe Deneme", "Tarih/Matematik Deneme", "Alan", "Eğitim", "Coğra
 # satır ekle.
 SLIDE_LINKS = [
     "https://docs.google.com/presentation/d/e/2PACX-1vQSVFpm7jRLL1CQBxbTASl7MMa15zDlPK8qSQ52k-of1UgZgVlWWA8bSIoEcXk5wGkCrLkugHPpwD91/pub?start=true&loop=true&delayms=4000",
-    "https://docs.google.com/presentation/d/e/2PACX-1vShudHZcWUT119wbSyybEZxjaXW4eW6qi6JPHVvSyaX-zPd_DpljXIUO9JbaKM_rDqGD540Ln0dUwk9/pub?start=true&loop=true&delayms=3000",
+    "https://docs.google.com/presentation/d/e/2PACX-1vShudHZcWUT119wbSyybEZxjaXW4eW6qi6JPHVvSyaX-zPd_DpljXIUO9JbaKM_rDqGD540Ln0dUwk9/pubembed?start=false&loop=false&delayms=3000" frameborder="0" ",
 ]
 
 # YouTube "Liste Dışı" (Unlisted) video linkleri. İstediğin kadar ekleyebilirsin.
