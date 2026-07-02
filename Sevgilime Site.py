@@ -18,7 +18,7 @@ TASKS = ["Türkçe Deneme", "Tarih/Matematik Deneme", "Alan", "Eğitim", "Coğra
 # alınan embed linki olmalı. Birden fazla slayt eklemek için listeye yeni
 # satır ekle.
 SLIDE_LINKS = [
-    {"baslik": "Senin için hazırladığım ilk slayt", "link": "https://docs.google.com/presentation/d/e/2PACX-1vTEN1GL1WX38hiL706djqrsamUVQ0T56sgnZsKH2vDAyUKhNWV0SagDGp0TGjM9W7gi3KNzv2yH2exo/pubembed?start=true&loop=true&delayms=60000/embed"},
+    {"baslik": "Senin için hazırladığım ilk slayt", "link": "https://docs.google.com/presentation/d/e/2PACX-1vTEN1GL1WX38hiL706djqrsamUVQ0T56sgnZsKH2vDAyUKhNWV0SagDGp0TGjM9W7gi3KNzv2yH2exo/pubembed?start=true&loop=true&delayms=60000"},
     {"baslik": "Araşmak için özel çabam", "link": "https://docs.google.com/presentation/d/e/2PACX-1vShudHZcWUT119wbSyybEZxjaXW4eW6qi6JPHVvSyaX-zPd_DpljXIUO9JbaKM_rDqGD540Ln0dUwk9/pubembed?start=true&loop=true&delayms=60000/embed"},
     {"baslik": "Doğum gününe özel", "link": "https://docs.google.com/presentation/d/e/2PACX-1vTnYFp7yi0g2ixOiMSSSFXIBoqkTvCyX45Uk_IfBZwP9DSyeDKJrnPqSoZVEMAjuiC4Nyi32XPt0Msm/pubembed?start=true&loop=true&delayms=60000/embed"},
 ]
