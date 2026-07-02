@@ -28,6 +28,7 @@ VIDEO_LINKS = [
     {"baslik": "Senle İlk Ortak Anımız", "link": "https://www.youtube.com/watch?v=R80w7Ye5Qz0"},
     {"baslik": "Sana Attığım İlk Video, hediyelerini açmıştım sevinçle", "link": "https://www.youtube.com/watch?v=NmjYdA1Wn-w"},
     {"baslik": "Doğum günün için geçmiştim kamera karşısına", "link": "https://www.youtube.com/watch?v=r7fq_oeVL_I"},
+    {"baslik": "Bebeğim canı sıkılmıştı çareyi onla iletişimde bulduk", "link": "youtube.com/watch?v=HtP57OEh4VE&feature=youtu.be"},
 ]
 
 # Not kartları — 25-30'a tamamla. Her biri virgülle ayrılmış bir metin.
