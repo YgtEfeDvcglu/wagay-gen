@@ -26,7 +26,7 @@ SLIDE_LINKS = [
 # YouTube "Liste Dışı" (Unlisted) video linkleri. İstediğin kadar ekleyebilirsin.
 VIDEO_LINKS = [
     {"baslik": "Senle İlk Ortak Anımız", "link": "https://www.youtube.com/watch?v=R80w7Ye5Qz0"},
-    {"baslik": "Sana Attığım İlk Video, hediyelerini açmıştım sevinçle", "link": "https://www.youtube.com/watch?v=r7fq_oeVL_I"},
+    {"baslik": "Sana Attığım İlk Video, hediyelerini açmıştım sevinçle", "link": "https://www.youtube.com/watch?v=NmjYdA1Wn-w"},
     {"baslik": "Doğum günün için geçmiştim kamera karşısına", "link": "https://www.youtube.com/watch?v=r7fq_oeVL_I"},
 ]
 
