@@ -384,14 +384,14 @@ def render_archive() -> None:
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("<div class='arsiv-subtitle'>Slaytlar</div>", unsafe_allow_html=True)
-        for i, link in enumerate(SLIDE_LINKS, 1):
-            st.markdown(f"<div class='arsiv-caption'>Slayt {i}</div>", unsafe_allow_html=True)
-            components.iframe(link, height=260)
+        for slayt in SLIDE_LINKS:
+            st.markdown(f"<div class='arsiv-caption'>{slayt['baslik']}</div>", unsafe_allow_html=True)
+            components.iframe(slayt["link"], height=260)
     with col2:
         st.markdown("<div class='arsiv-subtitle'>Videolar</div>", unsafe_allow_html=True)
-        for i, link in enumerate(VIDEO_LINKS, 1):
-            st.markdown(f"<div class='arsiv-caption'>Video {i}</div>", unsafe_allow_html=True)
-            st.video(link)
+        for video in VIDEO_LINKS:
+            st.markdown(f"<div class='arsiv-caption'>{video['baslik']}</div>", unsafe_allow_html=True)
+            st.video(video["link"])
 
     st.markdown("</div>", unsafe_allow_html=True)
 
