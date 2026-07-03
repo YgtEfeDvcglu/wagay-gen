@@ -38,11 +38,20 @@ VIDEO_LINKS = [
 # Bunlar tamamen senin yazacağın, kişisel notların; burada sadece örnek
 # olarak orijinal 5 not duruyor.
 NOTES = [
-    "Bugün çok güzelsin, her zamanki gibi.",
-    "Çalışmalarında başarılar, o denemeler fullenecek!",
-    "Ne zaman yorulsan, 16 Ağustos'u ve sonrasını hatırla.",
-    "Birlikte daha çok anı biriktireceğiz.",
-    "Coğrafya tekrarını unutma, haritalara iyi bak.",
+    "Dün de bugün de tüm geleceğimde de benim her şeyimsin",
+    "İlk kez göktaşı yağmurunu kayda aldığımdaki heyecanımla seviyorum seni",
+    "Ben her an, her saniye seninleyim; en büyük destekçin en büyük inanç kaynağınım",
+    "Dünyanın dört bir yanını görmeyi özel kılan şey senin varlığın",
+    "Sen benim her anımda şans meleğim, mutluluk kaynağımsın",
+    "Yanında olmak bu hayatta isteyebileceğim en yüce şey, senin yanın benim mutluluğum her daim",
+    "Senden önce ne kadar umutsuzsam senden sonra bi o kadar (u)mutluyum",
+    "Kendime şanssız demeyi senle bıraktım, sana sahip olmak dünyadaki her şanstan öte",
+    "Dün olmasa da bugün olamıyorsa da o iş her neyse yarın olacağına yine en çok ben inanrım",
+    "Her anımda ve her anımda olmanı istiyorum, ne yaşanır bilmem yeter ki senle yaşansın",
+    "Güzelliğinle, zekanla ve kalbinle hayatımın her köşesinde iyi ki sensin benimle",
+    "İleride her şey olabilirim yeter ki senle olayım bebeğim",
+    "En kötü günde yanındayım çünkü en iyi gününde yanında olmak istiyorum",
+    
     # ... diğer notlarını buraya, aynı formatta, virgülle ayırarak ekle
 ]
 
