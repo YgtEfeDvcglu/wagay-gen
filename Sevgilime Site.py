@@ -31,6 +31,7 @@ VIDEO_LINKS = [
     {"baslik": "Bebeğim canı sıkılmıştı çareyi onla iletişimde bulduk", "link": "https://www.youtube.com/watch?v=HtP57OEh4VE"},
     {"baslik": "Sana olan sevgim dağlara taşlara ve alnıma yazılacak kadar yüce", "link": "https://www.youtube.com/watch?v=EPEGP6KZwK8"},
     {"baslik": "Sevgilime biraz desteğim gerekmişti", "link": "https://www.youtube.com/watch?v=5uyyKv4uxg4"},
+    {"baslik": "Bi tanemin bana aldığı muhteşem hediyeyi açmıştım mutlulukla", "link": "https://www.youtube.com/watch?v=TNPneyS7D3o"},
 ]
 
 # Not kartları — 25-30'a tamamla. Her biri virgülle ayrılmış bir metin.
