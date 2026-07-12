@@ -923,6 +923,32 @@ def render_note_sidebar() -> None:
         html = NOTE_WIDGET_TEMPLATE.replace("__NOTLAR_JSON__", json.dumps(NOTES, ensure_ascii=False))
         components.html(html, height=430, scrolling=False)
 
+        st.markdown("<hr style='margin: 30px 0 20px 0;'>", unsafe_allow_html=True)
+        
+        if "just_sent" not in st.session_state:
+            st.session_state.just_sent = False
+
+        if SHEETS_READY:
+            msg_sheet = get_messages_sheet()
+            records = msg_sheet.get_all_values()
+            
+            unread_msg = None
+            unread_row = -1
+            # Arka plandaki verileri tarar ve okunmamış (FALSE) ilk mesajı bulur
+            for i, row in enumerate(records):
+                if i == 0: continue
+                if len(row) >= 3 and row[2] == "FALSE":
+                    unread_msg = row[1]
+                    unread_row = i + 1
+                    break
+
+            if unread_msg and not st.session_state.just_sent:
+                st.markdown("<div class='arsiv-eyebrow' style='color:#C9A6E0; text-align:center;'>SÜRPRİZ!</div>", unsafe_allow_html=True)
+                if st.button("💌 Sürpriz Mesajı Oku", use_container_width=True):
+                    mesaj_oku_modal(msg_sheet, unread_msg, unread_row)
+            else:
+                if st.button("📝 Yeni Sürpriz Mesaj Yaz", use_container_width=True):
+                    mesaj_yaz_modal(msg_sheet)
 
 # ======================================================================
 # ANA AKIŞ
