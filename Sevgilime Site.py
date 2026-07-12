@@ -218,7 +218,7 @@ footer { visibility: hidden; }
 
 .st-key-counter_card,
 .st-key-todo_card,
-.st-key-archive_card,
+.st-key-archive_card
 .st-key-music_card {
     background: linear-gradient(155deg, rgba(78,42,107,0.55), rgba(28,18,37,0.9));
     border: 1px solid rgba(201,166,224,0.22);
@@ -385,41 +385,37 @@ check_password()
 # GOOGLE SHEETS — to-do listesinin iki cihazdan da senkron kalması için
 # ======================================================================
 
-@st.cache_data(ttl=4, show_spinner=False)
-def _sheet_values(_sheet):
-    return _sheet.get_all_values()
+@st.cache_resource(show_spinner=False)
+def get_gsheet():
+    scopes = ["https://www.googleapis.com/auth/spreadsheets"]
+    creds = Credentials.from_service_account_info(dict(st.secrets["gcp_service_account"]), scopes=scopes)
+    client = gspread.authorize(creds)
+    return client.open_by_key(st.secrets["sheet_id"]).sheet1
 
 
-def ensure_sheet_initialized(sheet, values) -> bool:
-    """Tablo daha önce kurulmadıysa kurar. True dönerse çağıran taraf veriyi
-    tekrar okumalı (çünkü az önce üzerine yazdık)."""
-    header_ok = len(values) > 0 and len(values[0]) > 0 and values[0][0].strip().lower() == "task"
+def ensure_sheet_initialized(sheet) -> None:
+    values = sheet.get_all_values()
+    header_ok = len(values) > 0 and values[0][:2] == ["task", "checked"]
     if not header_ok:
         sheet.clear()
         header = ["task", "checked", "", "last_reset"]
+        # API'nin matris uyuşmazlığından hata vermemesi için satır uzunluklarını boşluklarla 4'e tamamlıyoruz
         data_rows = [[t, "FALSE", "", ""] for t in TASKS]
-        sheet.update(range_name="A1", values=[header] + data_rows)
-        sheet.update(range_name="D2", values=[[""]])
-        _sheet_values.clear()
-        return True
-    return False
+        sheet.update([header] + data_rows, "A1")
+        sheet.update([[""]], "D2")
 
 
 def load_todo_state(sheet) -> dict:
     """Sheet'ten bugünün görev durumlarını okur; tarih değiştiyse otomatik sıfırlar."""
-    values = _sheet_values(sheet)
-    if ensure_sheet_initialized(sheet, values):
-        values = _sheet_values(sheet)
-    values = [row + [""] * (4 - len(row)) for row in values]
-
+    ensure_sheet_initialized(sheet)
+    values = sheet.get_all_values()
     today_str = datetime.date.today().isoformat()
-    last_reset = values[1][3] if len(values) > 1 else ""
+    last_reset = values[1][3] if len(values) > 1 and len(values[1]) > 3 else ""
 
     if last_reset != today_str:
         for idx in range(len(TASKS)):
             sheet.update_cell(idx + 2, 2, "FALSE")
         sheet.update_cell(2, 4, today_str)
-        _sheet_values.clear()
         return {t: False for t in TASKS}
 
     state = {}
@@ -432,7 +428,6 @@ def load_todo_state(sheet) -> dict:
 def update_task(sheet, task: str, value: bool) -> None:
     row_index = TASKS.index(task) + 2  # +1 başlık, +1 de 1-indexli olduğu için
     sheet.update_cell(row_index, 2, "TRUE" if value else "FALSE")
-    _sheet_values.clear()
 
 
 try:
@@ -702,6 +697,7 @@ def render_todo() -> None:
                 "Google Sheets bağlantısı henüz kurulmadı, bu yüzden görevler şu an "
                 "sadece bu oturumda görünür ve senkron çalışmaz. Kurulum için KURULUM.md dosyasına bak."
             )
+            st.code(_sheets_error, language="text")
             for task in TASKS:
                 st.checkbox(task, key=f"local_{task}")
         else:
