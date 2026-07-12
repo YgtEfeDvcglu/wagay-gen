@@ -329,9 +329,10 @@ def update_task(sheet, task: str, value: bool) -> None:
 try:
     _sheet = get_gsheet()
     SHEETS_READY = True
-except Exception:
+except Exception as e:
     _sheet = None
     SHEETS_READY = False
+    _sheets_error = str(e)
 
 
 # ======================================================================
