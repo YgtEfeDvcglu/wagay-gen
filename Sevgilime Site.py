@@ -885,7 +885,37 @@ NOTE_WIDGET_TEMPLATE = """
 </script>
 </div>
 """
+def get_messages_sheet():
+    if not SHEETS_READY: return None
+    worksheets = _sheet.spreadsheet.worksheets()
+    for ws in worksheets:
+        if ws.title == "Mesajlar":
+            return ws
+    # Sayfa yoksa arka planda kendi oluşturur
+    ws = _sheet.spreadsheet.add_worksheet("Mesajlar", 100, 3)
+    ws.update([["Tarih", "Mesaj", "Okundu_mu"]], "A1")
+    return ws
 
+@st.dialog("Sürpriz Mesaj Yaz")
+def mesaj_yaz_modal(msg_sheet):
+    st.markdown("Ona görünmesini istediğin notu buraya bırak. Sen gönderdikten sonraki ilk girişinde ekranının ortasında belirecek.", unsafe_allow_html=True)
+    yeni_mesaj = st.text_area("Mesaj", label_visibility="collapsed", placeholder="İçinden geçenleri yaz...")
+    if st.button("Gönder", use_container_width=True):
+        if yeni_mesaj.strip():
+            # Türkiye saatini baz alarak kaydeder
+            tarih = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))).isoformat()
+            msg_sheet.append_row([tarih, yeni_mesaj.strip(), "FALSE"])
+            # Gönderen kişinin ekranında bildirim çıkmaması için o anlık oturum damgası basıyoruz
+            st.session_state.just_sent = True
+            st.rerun()
+
+@st.dialog("Sana Bir Mesaj Var! 💌")
+def mesaj_oku_modal(msg_sheet, mesaj_metni, row_index):
+    st.markdown(f"<div style='font-size:18px; text-align:center; padding: 20px 0; color: #E8D9F5; font-family: \"Manrope\", sans-serif;'>{mesaj_metni}</div>", unsafe_allow_html=True)
+    if st.button("Okudum, kalbime sakladım", use_container_width=True):
+        # Okunduğu an veritabanında TRUE olur ve kalıcı olarak imha edilmiş gibi görünmez olur
+        msg_sheet.update_cell(row_index, 3, "TRUE")
+        st.rerun()
 
 def render_note_sidebar() -> None:
     with st.sidebar:
