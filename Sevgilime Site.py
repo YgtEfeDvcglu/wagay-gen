@@ -54,7 +54,27 @@ NOTES = [
     
     # ... diğer notlarını buraya, aynı formatta, virgülle ayırarak ekle
 ]
-
+MUSIC_LINKS = [
+    "https://open.spotify.com/embed/track/3iByXxPXdGsuvlYGCHJ0ED",
+    "https://www.youtube.com/embed/SxCZL9C3C1Y?si=v7OEHQ8PmsGD_BWk",
+    "https://www.youtube.com/embed/wmCgjLPvueY",
+    "https://open.spotify.com/embed/track/0MR22mypm79sVh5ejaTO6x",
+    "https://open.spotify.com/embed/track/5rRAOgZOAqHwUMwVAXkUYU",
+    "https://open.spotify.com/embed/track/1oDCK7PW72XEZ1pE5rh87A",
+    "https://open.spotify.com/embed/track/73hX9ImSkUt2qMnB2BcAZo",
+    "https://open.spotify.com/embed/track/4tC96bxgSFkA9tvPI0kCMb",
+    "https://open.spotify.com/embed/track/6dknibX4oGFTxWoodrv9wu",
+    "https://open.spotify.com/embed/track/1ko2lVN0vKGUl9zrU0qSlT",
+    "https://open.spotify.com/embed/track/29Xdknl9fhRsV0oOYyQOKy",
+    "https://www.youtube.com/embed/hgRtcsMvLT4",
+    "https://open.spotify.com/embed/track/2mrSLrErsXbkcoIzGrD82E",
+    "https://open.spotify.com/embed/track/39q7xibBdRboeMKUbZEB6g",
+    "https://open.spotify.com/embed/track/5YEBDtfU1CkrYUCJtjRmaa",
+    "https://open.spotify.com/embed/track/5arCoiBvRy9G6IMKLUVyzf",
+    "https://open.spotify.com/embed/track/41UTnVa6DvcVPUYoXWA97h",
+    
+    
+]    
 START_DATE = datetime.date(2025, 8, 16)
 
 # ======================================================================
@@ -116,7 +136,8 @@ footer { visibility: hidden; }
 
 .st-key-counter_card,
 .st-key-todo_card,
-.st-key-archive_card {
+.st-key-archive_card
+.st-key-music_card {
     background: linear-gradient(155deg, rgba(78,42,107,0.55), rgba(28,18,37,0.9));
     border: 1px solid rgba(201,166,224,0.22);
     border-radius: 18px;
@@ -367,7 +388,20 @@ def render_counter() -> None:
             unsafe_allow_html=True,
         )
 
-
+def render_music_box() -> None:
+    if not MUSIC_LINKS:
+        return
+    import random
+    # Her gün için o güne özel sabit bir rastgelelik (seed) oluşturuyoruz.
+    # Böylece şarkı gün boyu değişmez ama her gün listeden tamamen rastgele seçilir.
+    rng = random.Random(datetime.date.today().toordinal())
+    gunun_sarkisi = rng.choice(MUSIC_LINKS)
+    
+    with st.container(key="music_card"):
+        st.markdown("<div class='arsiv-eyebrow'>GÜNÜN FREKANSI</div>", unsafe_allow_html=True)
+        # Spotify'ın varsayılan embed yüksekliği 152, Apple Music'in 175'tir.
+        components.iframe(gunun_sarkisi, height=152 if "spotify" in gunun_sarkisi else 175)
+        
 # ---- çalışma zamanlayıcısı: kronometre + geri sayım ----
 # Not kağıtları gibi bu da ayrı bir HTML/JS bileşeni. Saniyede bir
 # güncellenmesi gerekiyor; bunu Streamlit'in sunucu taraflı rerun'larıyla
@@ -787,6 +821,7 @@ render_header()
 col_sayac, col_liste = st.columns([1, 1.25])
 with col_sayac:
     render_counter()
+    render_music_box()
 with col_liste:
     render_todo()
 
