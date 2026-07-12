@@ -12,7 +12,7 @@ from google.oauth2.service_account import Credentials
 
 # Günlük görevler (sırayı değiştirirsen Google Sheet'teki satır sırası da
 # otomatik olarak buna göre yeniden kurulur, sorun olmaz)
-TASKS = ["Türkçe Deneme", "Tarih/Matematik Deneme", "Alan", "Eğitim", "Coğrafya Tekrar"]
+TASKS = ["Türkçe Deneme", "Mat Deneme", "Alan", "Mevzuat", "Tekrarlar"]
 
 # Google Slides linkleri — her biri "Web'de Yayınla" (Publish to web) ile
 # alınan embed linki olmalı. Birden fazla slayt eklemek için listeye yeni
