@@ -579,6 +579,7 @@ def render_todo() -> None:
                 "Google Sheets bağlantısı henüz kurulmadı, bu yüzden görevler şu an "
                 "sadece bu oturumda görünür ve senkron çalışmaz. Kurulum için KURULUM.md dosyasına bak."
             )
+            st.code(_sheets_error, language="text")
             for task in TASKS:
                 st.checkbox(task, key=f"local_{task}")
         else:
