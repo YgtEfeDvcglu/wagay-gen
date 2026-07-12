@@ -484,7 +484,7 @@ def render_music_box() -> None:
     import random
     # Her gün için o güne özel sabit bir rastgelelik (seed) oluşturuyoruz.
     # Böylece şarkı gün boyu değişmez ama her gün listeden tamamen rastgele seçilir.
-    rng = random.Random(datetime.date.today().toordinal())
+    rng = random.Random(turkiye_bugunu().toordinal())
     gunun_sarkisi = rng.choice(MUSIC_LINKS)
     
     with st.container(key="music_card"):
