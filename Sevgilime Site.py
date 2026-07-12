@@ -159,6 +159,14 @@ MUSIC_LINKS = [
 ]     
 START_DATE = datetime.date(2025, 8, 16)
 
+TR_TZ = datetime.timezone(datetime.timedelta(hours=3))
+
+
+def turkiye_bugunu() -> datetime.date:
+    """Streamlit Cloud sunucuları UTC saatiyle çalışıyor; gün değişimini
+    (gece yarısı) bu yüzden Türkiye saatine göre hesaplıyoruz."""
+    return datetime.datetime.now(TR_TZ).date()
+
 # ======================================================================
 # SAYFA AYARLARI
 # ======================================================================
@@ -450,7 +458,7 @@ def render_header() -> None:
 
 
 def render_counter() -> None:
-    today = datetime.date.today()
+    today = turkiye_bugunu()
     delta_days = (today - START_DATE).days
     months_passed = (today.year - START_DATE.year) * 12 + (today.month - START_DATE.month)
     if today.day < START_DATE.day:
