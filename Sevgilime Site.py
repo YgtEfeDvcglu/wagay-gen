@@ -114,7 +114,9 @@ footer { visibility: hidden; }
     margin-bottom: 10px;
 }
 
-.arsiv-card {
+.st-key-counter_card,
+.st-key-todo_card,
+.st-key-archive_card {
     background: linear-gradient(155deg, rgba(78,42,107,0.55), rgba(28,18,37,0.9));
     border: 1px solid rgba(201,166,224,0.22);
     border-radius: 18px;
@@ -161,15 +163,28 @@ footer { visibility: hidden; }
     margin: 4px 0 6px 0;
 }
 
+.counter-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
 .counter-number {
     font-family: 'Space Mono', monospace;
-    font-size: 64px;
+    font-size: 58px;
     font-weight: 700;
     line-height: 1;
     background: linear-gradient(120deg, var(--lilac-soft), var(--lilac) 60%, var(--paper-red));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+}
+
+.counter-unit {
+    font-family: 'Manrope', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--lilac-soft);
 }
 
 .counter-label {
@@ -337,78 +352,279 @@ def render_counter() -> None:
         months_passed -= 1
     is_anniversary_day = today.day == START_DATE.day
 
-    st.markdown("<div class='arsiv-card'>", unsafe_allow_html=True)
-    st.markdown("<div class='arsiv-eyebrow'>ARŞİV NO. 01 — SAYAÇ</div>", unsafe_allow_html=True)
-    if is_anniversary_day and months_passed > 0:
+    with st.container(key="counter_card"):
+        if is_anniversary_day and months_passed > 0:
+            st.markdown(
+                f"<div class='anniversary-banner'>🎉 Bugün {months_passed}. ay dönümümüz!</div>",
+                unsafe_allow_html=True,
+            )
         st.markdown(
-            f"<div class='anniversary-banner'>🎉 Bugün {months_passed}. ay dönümümüz!</div>",
+            f"<div class='counter-row'><span class='counter-number'>{delta_days}</span>"
+            f"<span class='counter-unit'>gün</span></div>"
+            f"<div class='counter-label'>16 Ağustos 2025'ten beri · {months_passed} aydır birlikteyiz</div>",
             unsafe_allow_html=True,
         )
-    st.markdown(f"<div class='counter-number'>{delta_days}</div>", unsafe_allow_html=True)
-    st.markdown(
-        f"<div class='counter-label'>gün — 16 Ağustos 2025'ten beri · {months_passed} aydır birlikteyiz</div>",
-        unsafe_allow_html=True,
-    )
-    st.markdown("</div>", unsafe_allow_html=True)
+
+
+# ---- çalışma zamanlayıcısı: kronometre + geri sayım ----
+# Not kağıtları gibi bu da ayrı bir HTML/JS bileşeni. Saniyede bir
+# güncellenmesi gerekiyor; bunu Streamlit'in sunucu taraflı rerun'larıyla
+# yapsaydık hem görüntü titrer hem de (Google Sheets bağlıyken) saniyede
+# bir gereksiz API isteği atardık. Bu yüzden tamamen tarayıcıda, kendi
+# başına çalışıyor.
+TIMER_WIDGET_HTML = """
+<div id="zaman-widget">
+<style>
+  #zaman-widget { font-family: 'Manrope', sans-serif; color: #E8D9F5; }
+  .zaman-modlar { display: flex; gap: 8px; margin-bottom: 14px; }
+  .zaman-mod-buton {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(201,166,224,0.3);
+    color: rgba(232,217,245,0.6);
+    border-radius: 999px;
+    padding: 7px 10px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s ease;
+  }
+  .zaman-mod-buton.aktif { background: #C9A6E0; color: #1C1225; border-color: #C9A6E0; }
+  .zaman-mod-buton:disabled { cursor: not-allowed; opacity: 0.5; }
+
+  .zaman-sure-girisi {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: rgba(232,217,245,0.6);
+  }
+  .zaman-sure-girisi input {
+    width: 56px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(201,166,224,0.3);
+    border-radius: 8px;
+    color: #E8D9F5;
+    padding: 4px 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+  }
+
+  .zaman-gosterge {
+    font-family: 'Space Mono', monospace;
+    font-size: 42px;
+    font-weight: 700;
+    text-align: center;
+    padding: 6px 0 16px 0;
+    letter-spacing: 1px;
+    color: #E8D9F5;
+  }
+  .zaman-gosterge.bitti { color: #B23A48; animation: zamanVurgu 0.6s ease 3; }
+  @keyframes zamanVurgu { 50% { transform: scale(1.08); } }
+
+  .zaman-kontroller { display: flex; gap: 8px; }
+  .zaman-buton {
+    flex: 1;
+    background: linear-gradient(135deg, #4E2A6B, #1C1225);
+    border: 1px solid rgba(201,166,224,0.4);
+    color: #E8D9F5;
+    border-radius: 999px;
+    padding: 9px 14px;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .2s ease;
+  }
+  .zaman-buton:hover { background: #C9A6E0; color: #1C1225; border-color: #C9A6E0; }
+</style>
+
+<div class="zaman-modlar">
+  <button class="zaman-mod-buton aktif" id="mod-kronometre">⏱ Kronometre</button>
+  <button class="zaman-mod-buton" id="mod-geri-sayim">⏳ Geri Sayım</button>
+</div>
+
+<div class="zaman-sure-girisi" id="sure-girisi-alani">
+  <span>Süre (dakika):</span>
+  <input type="number" id="sure-input" value="25" min="1" max="180">
+</div>
+
+<div class="zaman-gosterge" id="zaman-gosterge">00:00</div>
+
+<div class="zaman-kontroller">
+  <button class="zaman-buton" id="zaman-baslat">Başlat</button>
+  <button class="zaman-buton" id="zaman-sifirla">Sıfırla</button>
+</div>
+
+<script>
+  let mod = 'up';
+  let saniye = 0;
+  let hedefSaniye = 25 * 60;
+  let calisiyor = false;
+  let zamanlayici = null;
+
+  const gosterge = document.getElementById('zaman-gosterge');
+  const baslatBtn = document.getElementById('zaman-baslat');
+  const sifirlaBtn = document.getElementById('zaman-sifirla');
+  const modKronometre = document.getElementById('mod-kronometre');
+  const modGeriSayim = document.getElementById('mod-geri-sayim');
+  const sureGirisiAlani = document.getElementById('sure-girisi-alani');
+  const sureInput = document.getElementById('sure-input');
+
+  function formatla(sn) {
+    const s = Math.max(0, sn);
+    const dk = Math.floor(s / 60);
+    const saniyeK = s % 60;
+    return String(dk).padStart(2, '0') + ':' + String(saniyeK).padStart(2, '0');
+  }
+
+  function goster() {
+    gosterge.textContent = mod === 'up' ? formatla(saniye) : formatla(hedefSaniye - saniye);
+  }
+
+  function beepCal() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const kazanc = ctx.createGain();
+      osc.connect(kazanc);
+      kazanc.connect(ctx.destination);
+      osc.frequency.value = 720;
+      kazanc.gain.setValueAtTime(0.15, ctx.currentTime);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.35);
+    } catch (e) { /* sessiz geç */ }
+  }
+
+  function tikla() {
+    saniye += 1;
+    if (mod === 'down' && saniye >= hedefSaniye) {
+      saniye = hedefSaniye;
+      durdur();
+      gosterge.classList.add('bitti');
+      beepCal();
+    }
+    goster();
+  }
+
+  function baslatDurdur() {
+    if (calisiyor) {
+      durdur();
+    } else {
+      calisiyor = true;
+      baslatBtn.textContent = 'Duraklat';
+      modKronometre.disabled = true;
+      modGeriSayim.disabled = true;
+      zamanlayici = setInterval(tikla, 1000);
+    }
+  }
+
+  function durdur() {
+    calisiyor = false;
+    baslatBtn.textContent = 'Başlat';
+    clearInterval(zamanlayici);
+  }
+
+  function sifirla() {
+    durdur();
+    saniye = 0;
+    gosterge.classList.remove('bitti');
+    modKronometre.disabled = false;
+    modGeriSayim.disabled = false;
+    goster();
+  }
+
+  modKronometre.addEventListener('click', function () {
+    if (calisiyor) return;
+    mod = 'up';
+    modKronometre.classList.add('aktif');
+    modGeriSayim.classList.remove('aktif');
+    sureGirisiAlani.style.display = 'none';
+    sifirla();
+  });
+
+  modGeriSayim.addEventListener('click', function () {
+    if (calisiyor) return;
+    mod = 'down';
+    modGeriSayim.classList.add('aktif');
+    modKronometre.classList.remove('aktif');
+    sureGirisiAlani.style.display = 'flex';
+    sifirla();
+  });
+
+  sureInput.addEventListener('change', function () {
+    const dk = Math.max(1, Math.min(180, parseInt(sureInput.value) || 25));
+    sureInput.value = dk;
+    hedefSaniye = dk * 60;
+    if (!calisiyor) { saniye = 0; goster(); }
+  });
+
+  baslatBtn.addEventListener('click', baslatDurdur);
+  sifirlaBtn.addEventListener('click', sifirla);
+
+  goster();
+</script>
+</div>
+"""
 
 
 def render_todo() -> None:
-    st.markdown("<div class='arsiv-card'>", unsafe_allow_html=True)
-    st.markdown("<div class='arsiv-eyebrow'>ARŞİV NO. 02 — GÜNLÜK GÖREVLER</div>", unsafe_allow_html=True)
-    st.markdown("<h3 class='arsiv-h3'>Bugünün listesi</h3>", unsafe_allow_html=True)
+    with st.container(key="todo_card"):
+        st.markdown("<h3 class='arsiv-h3'>Bugünün listesi</h3>", unsafe_allow_html=True)
 
-    if not SHEETS_READY:
-        st.warning(
-            "Google Sheets bağlantısı henüz kurulmadı, bu yüzden görevler şu an "
-            "sadece bu oturumda görünür ve senkron çalışmaz. Kurulum için KURULUM.md dosyasına bak."
+        if not SHEETS_READY:
+            st.warning(
+                "Google Sheets bağlantısı henüz kurulmadı, bu yüzden görevler şu an "
+                "sadece bu oturumda görünür ve senkron çalışmaz. Kurulum için KURULUM.md dosyasına bak."
+            )
+            for task in TASKS:
+                st.checkbox(task, key=f"local_{task}")
+        else:
+            state = load_todo_state(_sheet)
+            done = sum(state.values())
+
+            col_a, col_b = st.columns([5, 1])
+            with col_a:
+                st.progress(done / len(TASKS) if TASKS else 0, text=f"{done}/{len(TASKS)} tamamlandı")
+            with col_b:
+                if st.button("🔄", help="Diğer cihazdan gelen güncellemeleri çek"):
+                    st.rerun()
+
+            for task in TASKS:
+                current = state[task]
+                # Anahtarı mevcut değere bağlıyoruz ki farklı cihazdan gelen bir
+                # değişiklik ya da gece yarısı sıfırlanma, tarayıcıdaki eski
+                # widget durumu yüzünden görmezden gelinmesin.
+                widget_key = f"chk_{task}_{current}"
+                new_val = st.checkbox(task, value=current, key=widget_key)
+                if new_val != current:
+                    update_task(_sheet, task, new_val)
+                    st.rerun()
+
+        st.markdown(
+            "<div class='arsiv-subtitle' style='margin-top:22px;'>Çalışma Zamanlayıcısı</div>",
+            unsafe_allow_html=True,
         )
-        for task in TASKS:
-            st.checkbox(task, key=f"local_{task}")
-        st.markdown("</div>", unsafe_allow_html=True)
-        return
-
-    state = load_todo_state(_sheet)
-    done = sum(state.values())
-
-    col_a, col_b = st.columns([5, 1])
-    with col_a:
-        st.progress(done / len(TASKS) if TASKS else 0, text=f"{done}/{len(TASKS)} tamamlandı")
-    with col_b:
-        if st.button("🔄", help="Diğer cihazdan gelen güncellemeleri çek"):
-            st.rerun()
-
-    for task in TASKS:
-        current = state[task]
-        # Anahtarı mevcut değere bağlıyoruz ki farklı cihazdan gelen bir
-        # değişiklik ya da gece yarısı sıfırlanma, tarayıcıdaki eski
-        # widget durumu yüzünden görmezden gelinmesin.
-        widget_key = f"chk_{task}_{current}"
-        new_val = st.checkbox(task, value=current, key=widget_key)
-        if new_val != current:
-            update_task(_sheet, task, new_val)
-            st.rerun()
-
-    st.markdown("</div>", unsafe_allow_html=True)
+        components.html(TIMER_WIDGET_HTML, height=215, scrolling=False)
 
 
 def render_archive() -> None:
-    st.markdown("<div class='arsiv-card'>", unsafe_allow_html=True)
-    st.markdown("<div class='arsiv-eyebrow'>ARŞİV NO. 03 — KAYITLAR</div>", unsafe_allow_html=True)
-    st.markdown("<h3 class='arsiv-h3'>Anılar</h3>", unsafe_allow_html=True)
+    with st.container(key="archive_card"):
+        st.markdown("<h3 class='arsiv-h3'>Anılar</h3>", unsafe_allow_html=True)
 
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown("<div class='arsiv-subtitle'>Slaytlar</div>", unsafe_allow_html=True)
-        for slayt in SLIDE_LINKS:
-            st.markdown(f"<div class='arsiv-caption'>{slayt['baslik']}</div>", unsafe_allow_html=True)
-            components.iframe(slayt["link"], height=260)
-    with col2:
-        st.markdown("<div class='arsiv-subtitle'>Videolar</div>", unsafe_allow_html=True)
-        for video in VIDEO_LINKS:
-            st.markdown(f"<div class='arsiv-caption'>{video['baslik']}</div>", unsafe_allow_html=True)
-            st.video(video["link"])
-
-    st.markdown("</div>", unsafe_allow_html=True)
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("<div class='arsiv-subtitle'>Slaytlar</div>", unsafe_allow_html=True)
+            for slayt in SLIDE_LINKS:
+                st.markdown(f"<div class='arsiv-caption'>{slayt['baslik']}</div>", unsafe_allow_html=True)
+                components.iframe(slayt["link"], height=260)
+        with col2:
+            st.markdown("<div class='arsiv-subtitle'>Videolar</div>", unsafe_allow_html=True)
+            for video in VIDEO_LINKS:
+                st.markdown(f"<div class='arsiv-caption'>{video['baslik']}</div>", unsafe_allow_html=True)
+                st.video(video["link"])
 
 
 # ---- kırmızı not kağıtları: bağımsız bir HTML/CSS/JS bileşeni ----
@@ -554,7 +770,6 @@ NOTE_WIDGET_TEMPLATE = """
 
 def render_note_sidebar() -> None:
     with st.sidebar:
-        st.markdown("<div class='arsiv-eyebrow'>ARŞİV NO. 04 — NOTLAR</div>", unsafe_allow_html=True)
         st.markdown("<h3 class='arsiv-h3' style='font-size:22px;'>Sana bir notum var</h3>", unsafe_allow_html=True)
         html = NOTE_WIDGET_TEMPLATE.replace("__NOTLAR_JSON__", json.dumps(NOTES, ensure_ascii=False))
         components.html(html, height=430, scrolling=False)
@@ -565,7 +780,12 @@ def render_note_sidebar() -> None:
 # ======================================================================
 
 render_header()
-render_counter()
-render_todo()
+
+col_sayac, col_liste = st.columns([1, 1.25])
+with col_sayac:
+    render_counter()
+with col_liste:
+    render_todo()
+
 render_archive()
 render_note_sidebar()
