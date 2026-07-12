@@ -417,7 +417,7 @@ def load_todo_state(sheet) -> dict:
     """Sheet'ten bugünün görev durumlarını okur; tarih değiştiyse otomatik sıfırlar."""
     ensure_sheet_initialized(sheet)
     values = sheet.get_all_values()
-    today_str = turkiye_bugunu().isoformat()
+    today_str = datetime.date.today().isoformat()
     last_reset = values[1][3] if len(values) > 1 and len(values[1]) > 3 else ""
 
     if last_reset != today_str:
