@@ -440,7 +440,7 @@ def render_counter() -> None:
         st.markdown(
             f"<div class='counter-row'><span class='counter-number'>{delta_days}</span>"
             f"<span class='counter-unit'>gün</span></div>"
-            f"<div class='counter-label'>16 Ağustos 2025'ten beri · {months_passed} aydır birlikteyiz</div>",
+            f"{months_passed} aydır birlikteyiz</div>",
             unsafe_allow_html=True,
         )
 
