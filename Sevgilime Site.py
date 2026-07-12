@@ -296,9 +296,10 @@ def ensure_sheet_initialized(sheet) -> None:
     if not header_ok:
         sheet.clear()
         header = ["task", "checked", "", "last_reset"]
-        data_rows = [[t, "FALSE"] for t in TASKS]
-        sheet.update(range_name="A1", values=[header] + data_rows)
-        sheet.update(range_name="D2", values=[[""]])
+        # API'nin matris uyuşmazlığından hata vermemesi için satır uzunluklarını boşluklarla 4'e tamamlıyoruz
+        data_rows = [[t, "FALSE", "", ""] for t in TASKS]
+        sheet.update([header] + data_rows, "A1")
+        sheet.update([[""]], "D2")
 
 
 def load_todo_state(sheet) -> dict:
