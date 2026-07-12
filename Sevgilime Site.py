@@ -157,8 +157,6 @@ MUSIC_LINKS = [
     "https://open.spotify.com/embed/track/2FEWcWHnDmGD6WSqpW4VYu",
     "https://open.spotify.com/embed/track/6GMbt2Q4g7Qh46Ko7e3rbA",
 ]     
-INTRO_VIDEO_LINK = "https://www.youtube.com/watch?v=senin_liste_disi_linkin"
-
 START_DATE = datetime.date(2025, 8, 16)
 
 # ======================================================================
@@ -221,8 +219,7 @@ footer { visibility: hidden; }
 .st-key-counter_card,
 .st-key-todo_card,
 .st-key-archive_card
-.st-key-music_card 
-.st-key-intro_card {
+.st-key-music_card {
     background: linear-gradient(155deg, rgba(78,42,107,0.55), rgba(28,18,37,0.9));
     border: 1px solid rgba(201,166,224,0.22);
     border-radius: 18px;
@@ -486,12 +483,7 @@ def render_music_box() -> None:
         st.markdown("<div class='arsiv-eyebrow'>GÜNÜN FREKANSI</div>", unsafe_allow_html=True)
         # Spotify'ın varsayılan embed yüksekliği 152, Apple Music'in 175'tir.
         components.iframe(gunun_sarkisi, height=152 if "spotify" in gunun_sarkisi else 175)
-def render_intro_video() -> None:
-    if not INTRO_VIDEO_LINK:
-        return
-    with st.container(key="intro_card"):
-        st.markdown("<div class='arsiv-subtitle'>Bu Siteyi Neden Yaptım</div>", unsafe_allow_html=True)
-        st.video(INTRO_VIDEO_LINK)        
+        
 # ---- çalışma zamanlayıcısı: kronometre + geri sayım ----
 # Not kağıtları gibi bu da ayrı bir HTML/JS bileşeni. Saniyede bir
 # güncellenmesi gerekiyor; bunu Streamlit'in sunucu taraflı rerun'larıyla
@@ -968,7 +960,6 @@ col_sayac, col_liste = st.columns([1, 1.25])
 with col_sayac:
     render_counter()
     render_music_box()
-    render_intro_video()
 with col_liste:
     render_todo()
 
