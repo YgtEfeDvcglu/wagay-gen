@@ -924,7 +924,15 @@ def mesaj_oku_modal(msg_sheet, mesaj_metni, row_index):
         # Okunduğu an veritabanında TRUE olur ve kalıcı olarak imha edilmiş gibi görünmez olur
         msg_sheet.update_cell(row_index, 3, "TRUE")
         st.rerun()
-
+def get_shared_timer_sheet():
+    if not SHEETS_READY: return None
+    for ws in _sheet.spreadsheet.worksheets():
+        if ws.title == "OrtakKronometre":
+            return ws
+    # Sayfa yoksa arka planda oluşturur: A1(Durum), B1(Baslangic_Tarihi)
+    ws = _sheet.spreadsheet.add_worksheet("OrtakKronometre", 10, 2)
+    ws.update([["Durum", "Baslangic_Tarihi"], ["DURDU", "0"]], "A1")
+    return ws
 def render_note_sidebar() -> None:
     with st.sidebar:
         st.markdown("<h3 class='arsiv-h3' style='font-size:22px;'>Sana bir notum var</h3>", unsafe_allow_html=True)
