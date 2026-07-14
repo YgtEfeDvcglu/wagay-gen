@@ -857,6 +857,7 @@ def render_todo() -> None:
                         st.rerun()
 
         st.markdown(
+            "<div class='arsiv-subtitle' style='margin-top:22px;'>Çalışma Zamanlayıcısı</div>",
             unsafe_allow_html=True,
         )
         mod = st.radio("Zamanlayıcı Modu", ["Kişisel (Kronometre / Geri Sayım)", "Ortak Kronometre"], horizontal=True, label_visibility="collapsed")
