@@ -510,7 +510,7 @@ def get_movie_of_the_day(date_str):
         if not movies:
             return "Hata: Liste okunamadı (Sütunlar bozuk)", "", "", "https://s.ltrbxd.com/static/img/empty-poster-250.8461d43a.png"
 
-        rng = random.Random(datetime.date.today().toordinal())
+        rng = random.Random(turkiye_bugunu().toordinal())
         gunun_filmi = rng.choice(movies)
         
         ad = gunun_filmi.get("Name", "Bilinmeyen Film")
@@ -536,7 +536,7 @@ def get_movie_of_the_day(date_str):
 
 
 def render_movie_box() -> None:
-    ad, yil, link, afis = get_movie_of_the_day(datetime.date.today().isoformat())
+    ad, yil, link, afis = get_movie_of_the_day(turkiye_bugunu().isoformat())
     if not ad: return
     
     with st.container(key="movie_card"):
