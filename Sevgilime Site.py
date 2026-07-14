@@ -358,6 +358,10 @@ input[type="checkbox"] { accent-color: var(--lilac); }
 [data-testid="stProgress"] > div > div { background: linear-gradient(90deg, var(--lilac), var(--paper-red)); }
 
 hr { border-color: rgba(201,166,224,0.15); }
+/* Başlıkların yanındaki ataç ikonlarını kökünden yok eder */
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a, a.header-anchor {
+    display: none !important;
+}
 </style>
 """
 
@@ -550,7 +554,7 @@ def render_movie_box() -> None:
     if not ad: return
     
     with st.container(key="movie_card"):
-        st.markdown("<div class='arsiv-eyebrow'>GÜNÜN FİLMİ</div>", unsafe_allow_html=True)
+        st.markdown("<div class='arsiv-eyebrow'>BANA FİLM ÖNER</div>", unsafe_allow_html=True)
         html = f"""
         <div style="display: flex; gap: 15px; align-items: center; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; border: 1px solid rgba(201,166,224,0.2);">
             <img src="{afis}" style="width: 75px; border-radius: 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
@@ -821,7 +825,7 @@ def render_shared_timer():
 
 def render_todo() -> None:
     with st.container(key="todo_card"):
-        st.markdown("<h3 class='arsiv-h3'>Bugünün listesi</h3>", unsafe_allow_html=True)
+        st.markdown("<h3 class='arsiv-h3'>Bugünün Listesi</h3>", unsafe_allow_html=True)
 
         if not SHEETS_READY:
             st.warning(
@@ -894,8 +898,8 @@ def render_archive() -> None:
 # animasyon pürüzsüz oluyor ve sayfanın geri kalanı hiç yeniden çizilmiyor.
 def render_album() -> None:
     with st.container(key="album_card"):
-        st.markdown("<h3 class='arsiv-h3'>Gelecek Çerçeveleri</h3>", unsafe_allow_html=True)
-        st.markdown("<div class='arsiv-tagline'>Fiziken yan yana geldiğimizde bu boşluklar anılarımızla dolacak...</div>", unsafe_allow_html=True)
+        st.markdown("<h3 class='arsiv-h3'>Ömür Albümümüz</h3>", unsafe_allow_html=True)
+        st.markdown("<div class='arsiv-tagline'>Senle her birini en mutlu ve en güzel şekilde dolduracağız bebeğim</div>", unsafe_allow_html=True)
         
         album_html = """
         <style>
