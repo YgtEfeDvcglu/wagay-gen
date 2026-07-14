@@ -929,18 +929,29 @@ def render_album() -> None:
             height: 320px;
             display: flex;
             overflow: hidden;
+          /* Albümün ortasındaki defter kıvrımı gölgesi */
+          .album-container::before {
+            content: '';
+            position: absolute; left: 50%; top: 0; bottom: 0;
+            width: 40px; transform: translateX(-50%);
+            background: linear-gradient(to right, transparent, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.35) 55%, transparent);
+            z-index: 5; pointer-events: none;
           }
-          /* Albümün cilt/orta çizgisi */
+          /* Sarmal (Spiral) Cilt Çizgisi */
           .album-container::after {
             content: '';
             position: absolute;
-            left: 50%;
-            top: 0; bottom: 0;
-            width: 6px;
-            background: linear-gradient(to right, rgba(0,0,0,0.7), rgba(255,255,255,0.08), rgba(0,0,0,0.7));
-            box-shadow: 0 0 15px rgba(0,0,0,0.9);
+            left: 50%; top: 15px; bottom: 15px;
+            width: 44px; transform: translateX(-50%);
             z-index: 10;
-            transform: translateX(-50%);
+            /* 1: Sol delikler, 2: Sağ delikler, 3: Sarmal Teli */
+            background-image: 
+                radial-gradient(circle at 8px 15px, #110917 5px, transparent 6px),
+                radial-gradient(circle at 36px 15px, #110917 5px, transparent 6px),
+                linear-gradient(20deg, transparent 16px, #9a7eb0 17px, #E8D9F5 19px, #9a7eb0 21px, transparent 23px);
+            background-size: 44px 30px; /* 30 pikselde bir tekrar eder */
+            background-repeat: repeat-y;
+            filter: drop-shadow(0px 3px 4px rgba(0,0,0,0.7));
           }
           /* Sayfa Katmanları */
           .album-page {
