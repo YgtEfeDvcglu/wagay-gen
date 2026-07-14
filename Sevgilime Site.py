@@ -1144,4 +1144,5 @@ with col_liste:
     render_todo()
 
 render_archive()
+render_album()
 render_note_sidebar()
