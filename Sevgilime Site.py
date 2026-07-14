@@ -226,8 +226,9 @@ footer { visibility: hidden; }
 
 .st-key-counter_card,
 .st-key-todo_card,
-.st-key-archive_card
-.st-key-music_card {
+.st-key-archive_card,
+.st-key-music_card, 
+.st-key-movie_card {
     background: linear-gradient(155deg, rgba(78,42,107,0.55), rgba(28,18,37,0.9));
     border: 1px solid rgba(201,166,224,0.22);
     border-radius: 18px;
@@ -491,7 +492,50 @@ def render_music_box() -> None:
         st.markdown("<div class='arsiv-eyebrow'>GÜNÜN FREKANSI</div>", unsafe_allow_html=True)
         # Spotify'ın varsayılan embed yüksekliği 152, Apple Music'in 175'tir.
         components.iframe(gunun_sarkisi, height=152 if "spotify" in gunun_sarkisi else 175)
+@st.cache_data(ttl=86400) # Her buton tıklandığında siteyi yormaması için 24 saat önbelleğe alıyoruz
+def get_movie_of_the_day(date_str):
+    import csv, random, re, requests
+    try:
+        # Excel'in bozduğu CSV dosyasını Python'un kendi kütüphanesiyle kusursuzca okuyoruz
+        with open("watchlist.csv", "r", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            movies = [row for row in reader]
         
+        # O güne özel sabit rastgelelik
+        rng = random.Random(datetime.date.today().toordinal())
+        gunun_filmi = rng.choice(movies)
+        
+        ad = gunun_filmi.get("Name", "")
+        link = gunun_filmi.get("Letterboxd URI", "")
+        yil = gunun_filmi.get("Year", "")
+        
+        # Letterboxd'a gidip afişi çekiyoruz (Scraping)
+        headers = {"User-Agent": "Mozilla/5.0"}
+        html = requests.get(link, headers=headers).text
+        # Sitenin JSON kodları arasındaki yüksek çözünürlüklü afiş linkini Regex ile yakalıyoruz
+        match = re.search(r'"image":"(https://a\.ltrbxd\.com/resized/.*?.jpg.*?)"', html)
+        afis = match.group(1) if match else "https://s.ltrbxd.com/static/img/empty-poster-250.8461d43a.png"
+        
+        return ad, yil, link, afis
+    except Exception as e:
+        return None, None, None, None
+
+def render_movie_box() -> None:
+    ad, yil, link, afis = get_movie_of_the_day(datetime.date.today().isoformat())
+    if not ad: return
+    
+    with st.container(key="movie_card"):
+        st.markdown("<div class='arsiv-eyebrow'>GÜNÜN FİLMİ</div>", unsafe_allow_html=True)
+        # Afişi ve yazıları şık bir kart içinde gösteren özel HTML tasarımı
+        html = f"""
+        <div style="display: flex; gap: 15px; align-items: center; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; border: 1px solid rgba(201,166,224,0.2);">
+            <img src="{afis}" style="width: 75px; border-radius: 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+            <div>
+                <div style="color: #E8D9F5; font-weight: bold; font-size: 16px; font-family: 'Manrope', sans-serif;">{ad} <span style="font-size: 12px; color: rgba(232,217,245,0.6);">({yil})</span></div>
+                <a href="{link}" target="_blank" style="display: inline-block; margin-top: 8px; color: #1C1225; background: #C9A6E0; padding: 5px 12px; border-radius: 999px; text-decoration: none; font-size: 12px; font-weight: bold; font-family: 'Manrope', sans-serif; transition: opacity 0.2s;">Letterboxd'da İncele</a>
+            </div>
+        </div>
+        """        
 # ---- çalışma zamanlayıcısı: kronometre + geri sayım ----
 # Not kağıtları gibi bu da ayrı bir HTML/JS bileşeni. Saniyede bir
 # güncellenmesi gerekiyor; bunu Streamlit'in sunucu taraflı rerun'larıyla
@@ -1033,6 +1077,7 @@ col_sayac, col_liste = st.columns([1, 1.25])
 with col_sayac:
     render_counter()
     render_music_box()
+    render_movie_box()
 with col_liste:
     render_todo()
 
