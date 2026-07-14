@@ -1128,14 +1128,13 @@ render_header()
 
 st.markdown("""
 <style>
-[data-testid="stHorizontalBlock"] { align-items: center; }
 .counter-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
 .counter-number { font-family: 'Space Mono', monospace; font-size: 58px; font-weight: 700; line-height: 1; background: linear-gradient(120deg, var(--lilac-soft), var(--lilac) 60%, var(--paper-red)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .counter-unit { font-family: 'Manrope', sans-serif; font-size: 18px; font-weight: 600; color: var(--lilac-soft); }
 </style>
 """, unsafe_allow_html=True)
 
-# 2. Native ortalama komutu
+# 2. Native ortalama komutu sadece üstteki ana sütunları etkileyecek
 col_sayac, col_liste = st.columns([1, 1.25], vertical_alignment="center")
 with col_sayac:
     render_counter()
