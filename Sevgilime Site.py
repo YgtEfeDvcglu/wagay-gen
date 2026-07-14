@@ -246,8 +246,6 @@ div[data-testid="column"]:nth-of-type(2) {
 }
 
 .arsiv-h1 {
-
-.arsiv-h1 {
     font-family: 'Cormorant Garamond', serif;
     font-weight: 700;
     font-size: 44px;
@@ -358,23 +356,13 @@ input[type="checkbox"] { accent-color: var(--lilac); }
 [data-testid="stProgress"] > div > div { background: linear-gradient(90deg, var(--lilac), var(--paper-red)); }
 
 hr { border-color: rgba(201,166,224,0.15); }
-/* Başlıkların yanındaki ataç ikonlarını yok eden nükleer seçenek */
-.stMarkdown a.header-anchor,
-.stMarkdown h1 a,
-.stMarkdown h2 a,
-.stMarkdown h3 a,
-div[data-testid="stMarkdownContainer"] a.header-anchor {
-    display: none !important;
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-}
 
-.stMarkdown a.header-anchor svg,
-.stMarkdown h1 a svg,
-.stMarkdown h2 a svg,
-.stMarkdown h3 a svg {
+/* --- ATAÇ İKONLARINI KÖKÜNDEN SİLEN KOD --- */
+.stMarkdown a[href^="#"],
+.arsiv-h1 a, 
+.arsiv-h3 a {
     display: none !important;
+    pointer-events: none !important;
 }
 </style>
 """
