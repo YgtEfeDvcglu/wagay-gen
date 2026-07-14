@@ -1004,10 +1004,11 @@ def render_album() -> None:
             <div id="sayfa-1" class="album-page active">
               <div class="page-half">
                 <div class="photo-frame" style="transform: rotate(-4deg);">İlk<br>buluşmamız</div>
+                <div class="photo-frame" style="transform: rotate(2deg);">Senle ilk<br>date'imiz</div>
               </div>
               <div class="page-half">
-                <div class="photo-frame" style="transform: rotate(3deg);">İlk<br>tatilimiz</div>
                 <div class="photo-frame" style="transform: rotate(-2deg);">İlk yaptığımız<br>yemek</div>
+                <div class="photo-frame" style="transform: rotate(3deg);">İlk<br>tatilimiz</div>
               </div>
             </div>
             <!-- SAYFA 2 -->
