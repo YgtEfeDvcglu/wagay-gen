@@ -875,7 +875,7 @@ def render_archive() -> None:
             for slayt in SLIDE_LINKS:
                 st.markdown(f"<div class='arsiv-caption' style='margin-top: 10px;'>{slayt['baslik']}</div>", unsafe_allow_html=True)
                 components.iframe(slayt["link"], height=260)
-                
+
         with st.expander("Videolar", expanded=False):
             for video in VIDEO_LINKS:
                 st.markdown(f"<div class='arsiv-caption' style='margin-top: 10px;'>{video['baslik']}</div>", unsafe_allow_html=True)
@@ -1122,7 +1122,17 @@ def render_note_sidebar() -> None:
 
 render_header()
 
-col_sayac, col_liste = st.columns([1, 1.25])
+st.markdown("""
+<style>
+[data-testid="stHorizontalBlock"] { align-items: center; }
+.counter-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+.counter-number { font-family: 'Space Mono', monospace; font-size: 58px; font-weight: 700; line-height: 1; background: linear-gradient(120deg, var(--lilac-soft), var(--lilac) 60%, var(--paper-red)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.counter-unit { font-family: 'Manrope', sans-serif; font-size: 18px; font-weight: 600; color: var(--lilac-soft); }
+</style>
+""", unsafe_allow_html=True)
+
+# 2. Native ortalama komutu
+col_sayac, col_liste = st.columns([1, 1.25], vertical_alignment="center")
 with col_sayac:
     render_counter()
     render_music_box()
