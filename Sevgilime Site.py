@@ -902,8 +902,8 @@ def render_archive() -> None:
 def render_teaser() -> None:
     teaser_html = """
     <div style="position: relative; width: 100%; height: 160px; border-radius: 18px; overflow: hidden; margin-bottom: 26px; border: 1px solid rgba(201,166,224,0.22); box-shadow: 0 24px 48px -28px rgba(0,0,0,0.7); background: #1C1225;">
-        <!-- Arka planda soluk, renksiz ve blurlu Türkiye siyasi haritası -->
-        <div style="position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Blank_map_of_Turkey_provinces.svg/800px-Blank_map_of_Turkey_provinces.svg.png'); background-size: cover; background-position: center; filter: grayscale(100%) blur(4px) opacity(0.25);"></div>
+        <!-- Arka planda soluk, renksiz ve blurlu Türkiye silüeti -->
+        <div style="position: absolute; inset: 0; background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Turkey_location_map.svg/800px-Turkey_location_map.svg.png'); background-size: contain; background-repeat: no-repeat; background-position: center; filter: grayscale(1) blur(2.5px); opacity: 0.35;"></div>
         <!-- Üstündeki YAKINDA! yazısı -->
         <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 10;">
             <div style="font-family: 'Cormorant Garamond', serif; font-size: 46px; font-weight: 700; color: #E8D9F5; letter-spacing: 8px; text-shadow: 0 4px 15px rgba(0,0,0,0.9);">YAKINDA!</div>
