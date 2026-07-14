@@ -694,7 +694,60 @@ TIMER_WIDGET_HTML = """
 </script>
 </div>
 """
+def render_shared_timer():
+    if not SHEETS_READY:
+        st.warning("Ortak kronometre için Google Sheets bağlantısı gerekiyor.")
+        return
 
+    ws = get_shared_timer_sheet()
+    records = ws.get_all_values()
+    
+    # Veritabanındaki son durumu okuyoruz
+    durum = records[1][0] if len(records) > 1 and len(records[1]) > 0 else "DURDU"
+    baslangic_str = records[1][1] if len(records) > 1 and len(records[1]) > 1 else "0"
+
+    col_btn1, col_btn2 = st.columns(2)
+    if durum == "DURDU":
+        if col_btn1.button("▶ Ortak Başlat", use_container_width=True):
+            now_str = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))).isoformat()
+            ws.update([["CALISIYOR", now_str]], "A2")
+            st.rerun()
+    else:
+        if col_btn1.button("⏸ Herkes İçin Durdur", use_container_width=True):
+            ws.update([["DURDU", "0"]], "A2")
+            st.rerun()
+
+    if col_btn2.button("🔄 Eşitle", use_container_width=True, help="Diğer cihazdan başlatıldıysa süreyi çeker"):
+        st.rerun()
+
+    # Eğer çalışıyorsa, aradaki zaman farkını bulup sadece sayaç kısmını HTML ile akıcı gösteriyoruz
+    if durum == "CALISIYOR" and baslangic_str != "0":
+        baslangic = datetime.datetime.fromisoformat(baslangic_str)
+        now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3)))
+        diff_seconds = int((now - baslangic).total_seconds())
+        if diff_seconds < 0: diff_seconds = 0
+        
+        mini_html = f"""
+        <div style="font-family: 'Space Mono', monospace; font-size: 48px; font-weight: 700; text-align: center; color: #E8D9F5; padding: 15px 0;">
+            <span id="shared-time"></span>
+        </div>
+        <script>
+            let saniye = {diff_seconds};
+            function formatla(sn) {{
+                const dk = Math.floor(sn / 60);
+                const saniyeK = sn % 60;
+                return String(dk).padStart(2, '0') + ':' + String(saniyeK).padStart(2, '0');
+            }}
+            document.getElementById('shared-time').textContent = formatla(saniye);
+            setInterval(() => {{
+                saniye++;
+                document.getElementById('shared-time').textContent = formatla(saniye);
+            }}, 1000);
+        </script>
+        """
+        components.html(mini_html, height=120)
+    else:
+        st.markdown("<div style=\"font-family: 'Space Mono', monospace; font-size: 48px; font-weight: 700; text-align: center; color: #E8D9F5; padding: 15px 0;\">00:00</div>", unsafe_allow_html=True)
 
 def render_todo() -> None:
     with st.container(key="todo_card"):
@@ -734,7 +787,11 @@ def render_todo() -> None:
             "<div class='arsiv-subtitle' style='margin-top:22px;'>Çalışma Zamanlayıcısı</div>",
             unsafe_allow_html=True,
         )
-        components.html(TIMER_WIDGET_HTML, height=215, scrolling=False)
+        mod = st.radio("Zamanlayıcı Modu", ["Kişisel (Kronometre / Geri Sayım)", "Ortak Kronometre"], horizontal=True, label_visibility="collapsed")
+        if mod == "Kişisel (Kronometre / Geri Sayım)":
+            components.html(TIMER_WIDGET_HTML, height=215, scrolling=False)
+        else:
+            render_shared_timer()
 
 
 def render_archive() -> None:
