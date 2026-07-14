@@ -945,6 +945,7 @@ def render_album() -> None:
             left: 50%; top: 15px; bottom: 15px;
             width: 44px; transform: translateX(-50%);
             z-index: 10;
+            opacity: 0.25; /* Sarmalı saydamlaştırıp silikleştiren kod */
             /* 1: Sol delikler, 2: Sağ delikler, 3: Sarmal Teli */
             background-image: 
                 radial-gradient(circle at 8px 15px, #110917 5px, transparent 6px),
@@ -952,7 +953,7 @@ def render_album() -> None:
                 linear-gradient(20deg, transparent 16px, #9a7eb0 17px, #E8D9F5 19px, #9a7eb0 21px, transparent 23px);
             background-size: 44px 30px; /* 30 pikselde bir tekrar eder */
             background-repeat: repeat-y;
-            filter: drop-shadow(0px 3px 4px rgba(0,0,0,0.7));
+            filter: blur(0.8px) drop-shadow(0px 2px 3px rgba(0,0,0,0.6)); /* Sarmalı blurlayan ve gölgeyi yumuşatan kod */
           }
           /* Sayfa Katmanları */
           .album-page {
