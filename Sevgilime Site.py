@@ -1209,8 +1209,8 @@ def get_messages_sheet():
 def mesaj_yaz_modal(msg_sheet):
     st.markdown("Sürpriz notunu aşağıya bırak. Seçtiğin zamana göre ekranında belirecek.", unsafe_allow_html=True)
     
-    gonderen = st.radio("Kimden?", ["Yiğit Bey", "Güzeller güzeli bi tanem"], horizontal=True)
-    mesaj_turu = st.radio("Mesaj Türü", ["Ana bir anektod", "Geleceğe bir not"], horizontal=True)
+    gonderen = st.radio("Kimden?", ["Yiğit Beyden", "Güzeller Güzeli Bi tanemden"], horizontal=True)
+    mesaj_turu = st.radio("Mesaj Türü", ["Âna bir anektod", "Geleceğe bir not"], horizontal=True)
     
     hedef_tarih_str = ""
     if mesaj_turu == "Geleceğe bir not":
