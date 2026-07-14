@@ -1288,17 +1288,38 @@ def render_note_sidebar() -> None:
             
             unread_msg = None
             unread_row = -1
-            # Arka plandaki verileri tarar ve okunmamış (FALSE) ilk mesajı bulur
+            gonderen_etiketi = ""
+            
+            bugun = turkiye_bugunu()
+            
+            # Arka plandaki verileri tarar, vadesi gelmiş ve okunmamış (FALSE) mesajı bulur
             for i, row in enumerate(records):
                 if i == 0: continue
                 if len(row) >= 3 and row[2] == "FALSE":
-                    unread_msg = row[1]
-                    unread_row = i + 1
-                    break
+                    # Eski 3 sütunlu yapı kalmışsa hata vermemesi için güvenlik önlemi
+                    gndrn = row[3] if len(row) >= 4 else "Gizemli Biri"
+                    hdf_trh = row[4] if len(row) >= 5 else ""
+                    
+                    goster = False
+                    if not hdf_trh: # Âna bir anektod
+                        goster = True
+                    else: # Geleceğe bir not
+                        try:
+                            hdf_dt = datetime.datetime.strptime(hdf_trh, "%d.%m.%Y").date()
+                            if bugun >= hdf_dt:
+                                goster = True
+                        except:
+                            goster = True # Kullanıcı tarihi yanlış kaydettiyse mesaj içeride kilitli kalmasın
+                            
+                    if goster:
+                        unread_msg = row[1]
+                        unread_row = i + 1
+                        gonderen_etiketi = gndrn
+                        break
 
             if unread_msg and not st.session_state.just_sent:
                 st.markdown("<div class='arsiv-eyebrow' style='color:#C9A6E0; text-align:center;'>SÜRPRİZ!</div>", unsafe_allow_html=True)
-                if st.button("💌 Sürpriz Mesajı Oku", use_container_width=True):
+                if st.button(f"💌 {gonderen_etiketi}'den bir mesajın var!", use_container_width=True):
                     mesaj_oku_modal(msg_sheet, unread_msg, unread_row)
             else:
                 if st.button("📝 Yeni Sürpriz Mesaj Yaz", use_container_width=True):
