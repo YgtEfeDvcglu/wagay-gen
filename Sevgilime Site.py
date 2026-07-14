@@ -1201,19 +1201,35 @@ def get_messages_sheet():
         if ws.title == "Mesajlar":
             return ws
     # Sayfa yoksa arka planda kendi oluşturur
-    ws = _sheet.spreadsheet.add_worksheet("Mesajlar", 100, 3)
-    ws.update([["Tarih", "Mesaj", "Okundu_mu"]], "A1")
+    ws = _sheet.spreadsheet.add_worksheet("Mesajlar", 100, 5)
+    ws.update([["Tarih", "Mesaj", "Okundu_mu", "Gonderen", "Hedef_Tarih"]], "A1")
     return ws
 
 @st.dialog("Sürpriz Mesaj Yaz")
 def mesaj_yaz_modal(msg_sheet):
-    st.markdown("Ona görünmesini istediğin notu buraya bırak. Sen gönderdikten sonraki ilk girişinde ekranının ortasında belirecek.", unsafe_allow_html=True)
+    st.markdown("Sürpriz notunu aşağıya bırak. Seçtiğin zamana göre ekranında belirecek.", unsafe_allow_html=True)
+    
+    gonderen = st.radio("Kimden?", ["Yiğit Bey", "Güzeller güzeli bi tanem"], horizontal=True)
+    mesaj_turu = st.radio("Mesaj Türü", ["Ana bir anektod", "Geleceğe bir not"], horizontal=True)
+    
+    hedef_tarih_str = ""
+    if mesaj_turu == "Geleceğe bir not":
+        hedef_tarih_str = st.text_input("Hangi tarihte açılsın?", placeholder="GG.AA.YYYY (Örn: 24.11.2026)")
+        
     yeni_mesaj = st.text_area("Mesaj", label_visibility="collapsed", placeholder="İçinden geçenleri yaz...")
+    
     if st.button("Gönder", use_container_width=True):
         if yeni_mesaj.strip():
-            # Türkiye saatini baz alarak kaydeder
+            if mesaj_turu == "Geleceğe bir not":
+                try:
+                    # Tarih formatını kontrol et
+                    datetime.datetime.strptime(hedef_tarih_str, "%d.%m.%Y")
+                except ValueError:
+                    st.error("Lütfen tarihi örnekteki gibi GG.AA.YYYY formatında gir (Örn: 24.11.2026)")
+                    return
+                    
             tarih = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3))).isoformat()
-            msg_sheet.append_row([tarih, yeni_mesaj.strip(), "FALSE"])
+            msg_sheet.append_row([tarih, yeni_mesaj.strip(), "FALSE", gonderen, hedef_tarih_str])
             # Gönderen kişinin ekranında bildirim çıkmaması için o anlık oturum damgası basıyoruz
             st.session_state.just_sent = True
             st.rerun()
