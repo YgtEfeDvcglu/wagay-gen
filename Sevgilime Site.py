@@ -228,7 +228,8 @@ footer { visibility: hidden; }
 .st-key-todo_card,
 .st-key-archive_card,
 .st-key-music_card, 
-.st-key-movie_card {
+.st-key-movie_card,
+.st-key-album_card {
     background: linear-gradient(155deg, rgba(78,42,107,0.55), rgba(28,18,37,0.9));
     border: 1px solid rgba(201,166,224,0.22);
     border-radius: 18px;
@@ -236,6 +237,15 @@ footer { visibility: hidden; }
     margin-bottom: 26px;
     box-shadow: 0 24px 48px -28px rgba(0,0,0,0.7);
 }
+
+/* Sağ kolonun asimetrik simetriyle dikeyde ortalanması */
+div[data-testid="column"]:nth-of-type(2) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.arsiv-h1 {
 
 .arsiv-h1 {
     font-family: 'Cormorant Garamond', serif;
@@ -832,19 +842,21 @@ def render_todo() -> None:
                 if st.button("🔄", help="Diğer cihazdan gelen güncellemeleri çek"):
                     st.rerun()
 
-            for task in TASKS:
-                current = state[task]
-                # Anahtarı mevcut değere bağlıyoruz ki farklı cihazdan gelen bir
-                # değişiklik ya da gece yarısı sıfırlanma, tarayıcıdaki eski
-                # widget durumu yüzünden görmezden gelinmesin.
-                widget_key = f"chk_{task}_{current}"
-                new_val = st.checkbox(task, value=current, key=widget_key)
-                if new_val != current:
-                    update_task(_sheet, task, new_val)
-                    st.rerun()
+            if len(TASKS) > 0 and done == len(TASKS):
+                st.markdown("<div style='text-align:center; padding:35px 15px; font-size:22px; color:#C9A6E0; font-family:\"Cormorant Garamond\", serif; font-style:italic; font-weight:700;'>Benim bebeğim bugün başardı, SENİ SONSUZ SEVİYORUM VE HER ŞEYİMLE GÜVENİYORUM OH MİS</div>", unsafe_allow_html=True)
+            else:
+                for task in TASKS:
+                    current = state[task]
+                    # Anahtarı mevcut değere bağlıyoruz ki farklı cihazdan gelen bir
+                    # değişiklik ya da gece yarısı sıfırlanma, tarayıcıdaki eski
+                    # widget durumu yüzünden görmezden gelinmesin.
+                    widget_key = f"chk_{task}_{current}"
+                    new_val = st.checkbox(task, value=current, key=widget_key)
+                    if new_val != current:
+                        update_task(_sheet, task, new_val)
+                        st.rerun()
 
         st.markdown(
-            "<div class='arsiv-subtitle' style='margin-top:22px;'>Çalışma Zamanlayıcısı</div>",
             unsafe_allow_html=True,
         )
         mod = st.radio("Zamanlayıcı Modu", ["Kişisel (Kronometre / Geri Sayım)", "Ortak Kronometre"], horizontal=True, label_visibility="collapsed")
@@ -858,16 +870,14 @@ def render_archive() -> None:
     with st.container(key="archive_card"):
         st.markdown("<h3 class='arsiv-h3'>Anılar</h3>", unsafe_allow_html=True)
 
-        col1, col2 = st.columns(2)
-        with col1:
-            st.markdown("<div class='arsiv-subtitle'>Slaytlar</div>", unsafe_allow_html=True)
+        with st.expander("Slaytlar", expanded=False):
             for slayt in SLIDE_LINKS:
-                st.markdown(f"<div class='arsiv-caption'>{slayt['baslik']}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div class='arsiv-caption' style='margin-top: 10px;'>{slayt['baslik']}</div>", unsafe_allow_html=True)
                 components.iframe(slayt["link"], height=260)
-        with col2:
-            st.markdown("<div class='arsiv-subtitle'>Videolar</div>", unsafe_allow_html=True)
+                
+        with st.expander("Videolar", expanded=False):
             for video in VIDEO_LINKS:
-                st.markdown(f"<div class='arsiv-caption'>{video['baslik']}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div class='arsiv-caption' style='margin-top: 10px;'>{video['baslik']}</div>", unsafe_allow_html=True)
                 st.video(video["link"])
 
 
@@ -877,6 +887,28 @@ def render_archive() -> None:
 # animasyonu her seferinde "kesip" baştan başlatır. Bu bileşen kendi
 # iframe'i içinde, Streamlit'ten bağımsız, saf JS ile çalışıyor — bu yüzden
 # animasyon pürüzsüz oluyor ve sayfanın geri kalanı hiç yeniden çizilmiyor.
+def render_album() -> None:
+    with st.container(key="album_card"):
+        st.markdown("<h3 class='arsiv-h3'>Gelecek Çerçeveleri</h3>", unsafe_allow_html=True)
+        st.markdown("<div class='arsiv-tagline'>Fiziken yan yana geldiğimizde bu boşluklar anılarımızla dolacak...</div>", unsafe_allow_html=True)
+        
+        album_html = """
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 25px; margin-bottom: 10px;">
+            <div style="width: 170px; height: 170px; border: 2px dashed rgba(201,166,224,0.4); border-radius: 12px; position: relative; background: rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: center; transform: rotate(-3deg); transition: transform 0.3s ease;">
+                <span style="font-family: 'Cormorant Garamond', serif; font-size: 22px; color: rgba(232,217,245,0.7); transform: rotate(-15deg); text-align: center; font-weight: 600;">İlk<br>buluşmamız</span>
+            </div>
+            <div style="width: 170px; height: 170px; border: 2px dashed rgba(201,166,224,0.4); border-radius: 12px; position: relative; background: rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: center; transform: rotate(2deg); transition: transform 0.3s ease;">
+                <span style="font-family: 'Cormorant Garamond', serif; font-size: 22px; color: rgba(232,217,245,0.7); transform: rotate(-15deg); text-align: center; font-weight: 600;">İlk<br>tatilimiz</span>
+            </div>
+            <div style="width: 170px; height: 170px; border: 2px dashed rgba(201,166,224,0.4); border-radius: 12px; position: relative; background: rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: center; transform: rotate(-1deg); transition: transform 0.3s ease;">
+                <span style="font-family: 'Cormorant Garamond', serif; font-size: 22px; color: rgba(232,217,245,0.7); transform: rotate(-15deg); text-align: center; font-weight: 600;">İlk yaptığımız<br>yemek</span>
+            </div>
+            <div style="width: 170px; height: 170px; border: 2px dashed rgba(201,166,224,0.15); border-radius: 12px; position: relative; background: transparent; display: flex; align-items: center; justify-content: center; transform: rotate(4deg);">
+                <span style="font-family: 'Cormorant Garamond', serif; font-size: 20px; color: rgba(201,166,224,0.4); font-style: italic; text-align: center;">...ve<br>Daha Niceleri</span>
+            </div>
+        </div>
+        """
+        st.markdown(album_html, unsafe_allow_html=True)
 NOTE_WIDGET_TEMPLATE = """
 <div id="not-widget">
 <style>
