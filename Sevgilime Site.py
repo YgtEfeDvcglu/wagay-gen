@@ -892,28 +892,168 @@ def render_archive() -> None:
 # animasyonu her seferinde "kesip" baştan başlatır. Bu bileşen kendi
 # iframe'i içinde, Streamlit'ten bağımsız, saf JS ile çalışıyor — bu yüzden
 # animasyon pürüzsüz oluyor ve sayfanın geri kalanı hiç yeniden çizilmiyor.
-def render_album() -> None:
+ddef render_album() -> None:
     with st.container(key="album_card"):
         st.markdown("<h3 class='arsiv-h3'>Gelecek Çerçeveleri</h3>", unsafe_allow_html=True)
         st.markdown("<div class='arsiv-tagline'>Fiziken yan yana geldiğimizde bu boşluklar anılarımızla dolacak...</div>", unsafe_allow_html=True)
         
         album_html = """
-        <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 25px; margin-bottom: 10px;">
-            <div style="width: 170px; height: 170px; border: 2px dashed rgba(201,166,224,0.4); border-radius: 12px; position: relative; background: rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: center; transform: rotate(-3deg); transition: transform 0.3s ease;">
-                <span style="font-family: 'Cormorant Garamond', serif; font-size: 22px; color: rgba(232,217,245,0.7); transform: rotate(-15deg); text-align: center; font-weight: 600;">İlk<br>buluşmamız</span>
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Manrope:wght@600&family=Space+Mono&display=swap');
+          
+          #album-widget { 
+            font-family: 'Manrope', sans-serif; 
+            color: #E8D9F5; 
+            padding: 5px;
+          }
+          .album-container {
+            position: relative;
+            background: #23142B;
+            border: 1px solid rgba(201,166,224,0.15);
+            border-radius: 12px;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.6), 0 15px 30px rgba(0,0,0,0.5);
+            height: 320px;
+            display: flex;
+            overflow: hidden;
+          }
+          /* Albümün cilt/orta çizgisi */
+          .album-container::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0; bottom: 0;
+            width: 6px;
+            background: linear-gradient(to right, rgba(0,0,0,0.7), rgba(255,255,255,0.08), rgba(0,0,0,0.7));
+            box-shadow: 0 0 15px rgba(0,0,0,0.9);
+            z-index: 10;
+            transform: translateX(-50%);
+          }
+          /* Sayfa Katmanları */
+          .album-page {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            opacity: 0;
+            transform: scale(0.96) translateY(10px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+          }
+          .album-page.active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            pointer-events: auto;
+          }
+          .page-half {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+          }
+          .photo-frame {
+            width: 140px; height: 125px;
+            border: 2px dashed rgba(201,166,224,0.3);
+            border-radius: 4px;
+            background: rgba(255,255,255,0.02);
+            display: flex; align-items: center; justify-content: center;
+            text-align: center;
+            color: rgba(232,217,245,0.6);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 20px; font-weight: 600;
+            line-height: 1.15;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: border-color 0.3s, color 0.3s;
+          }
+          .photo-frame:hover {
+            border-color: rgba(201,166,224,0.7);
+            color: rgba(232,217,245,0.9);
+          }
+          /* Alt Navigasyon */
+          .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding: 0 5px;
+          }
+          .page-indicator {
+            font-size: 11px;
+            color: rgba(232,217,245,0.4);
+            font-family: 'Space Mono', monospace;
+            letter-spacing: 2px;
+          }
+          .btn {
+            background: linear-gradient(135deg, #4E2A6B, #1C1225);
+            border: 1px solid rgba(201,166,224,0.4);
+            color: #E8D9F5;
+            padding: 8px 16px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-family: 'Manrope', sans-serif;
+            font-size: 12px; font-weight: 600;
+            transition: all 0.2s;
+          }
+          .btn:hover { background: #C9A6E0; color: #1C1225; border-color: #C9A6E0; }
+        </style>
+
+        <div id="album-widget">
+          <div class="album-container">
+            <!-- SAYFA 1 -->
+            <div id="sayfa-1" class="album-page active">
+              <div class="page-half">
+                <div class="photo-frame" style="transform: rotate(-4deg);">İlk<br>buluşmamız</div>
+              </div>
+              <div class="page-half">
+                <div class="photo-frame" style="transform: rotate(3deg);">İlk<br>tatilimiz</div>
+                <div class="photo-frame" style="transform: rotate(-2deg);">İlk yaptığımız<br>yemek</div>
+              </div>
             </div>
-            <div style="width: 170px; height: 170px; border: 2px dashed rgba(201,166,224,0.4); border-radius: 12px; position: relative; background: rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: center; transform: rotate(2deg); transition: transform 0.3s ease;">
-                <span style="font-family: 'Cormorant Garamond', serif; font-size: 22px; color: rgba(232,217,245,0.7); transform: rotate(-15deg); text-align: center; font-weight: 600;">İlk<br>tatilimiz</span>
+            <!-- SAYFA 2 -->
+            <div id="sayfa-2" class="album-page">
+              <div class="page-half" style="flex: 2;">
+                <div style="font-family: 'Cormorant Garamond', serif; font-size: 44px; color: #C9A6E0; font-style: italic; text-align: center; line-height: 1.3;">
+                  ...ve<br>Daha Niceleri
+                </div>
+              </div>
             </div>
-            <div style="width: 170px; height: 170px; border: 2px dashed rgba(201,166,224,0.4); border-radius: 12px; position: relative; background: rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: center; transform: rotate(-1deg); transition: transform 0.3s ease;">
-                <span style="font-family: 'Cormorant Garamond', serif; font-size: 22px; color: rgba(232,217,245,0.7); transform: rotate(-15deg); text-align: center; font-weight: 600;">İlk yaptığımız<br>yemek</span>
+          </div>
+
+          <div class="nav-bar">
+            <div class="page-indicator">SAYFA <span id="sayfa-no">1</span> / 2</div>
+            <div>
+              <button id="btn-geri" class="btn" style="display:none; margin-right: 8px;">⬅ Önceki Sayfa</button>
+              <button id="btn-ileri" class="btn">Sonraki Sayfa ➔</button>
             </div>
-            <div style="width: 170px; height: 170px; border: 2px dashed rgba(201,166,224,0.15); border-radius: 12px; position: relative; background: transparent; display: flex; align-items: center; justify-content: center; transform: rotate(4deg);">
-                <span style="font-family: 'Cormorant Garamond', serif; font-size: 20px; color: rgba(201,166,224,0.4); font-style: italic; text-align: center;">...ve<br>Daha Niceleri</span>
-            </div>
+          </div>
         </div>
+
+        <script>
+          const s1 = document.getElementById('sayfa-1');
+          const s2 = document.getElementById('sayfa-2');
+          const bIleri = document.getElementById('btn-ileri');
+          const bGeri = document.getElementById('btn-geri');
+          const no = document.getElementById('sayfa-no');
+
+          bIleri.addEventListener('click', () => {
+            s1.classList.remove('active');
+            s2.classList.add('active');
+            bIleri.style.display = 'none';
+            bGeri.style.display = 'inline-block';
+            no.textContent = '2';
+          });
+
+          bGeri.addEventListener('click', () => {
+            s2.classList.remove('active');
+            s1.classList.add('active');
+            bGeri.style.display = 'none';
+            bIleri.style.display = 'inline-block';
+            no.textContent = '1';
+          });
+        </script>
         """
-        st.markdown(album_html, unsafe_allow_html=True)
+        components.html(album_html, height=410, scrolling=False)
 NOTE_WIDGET_TEMPLATE = """
 <div id="not-widget">
 <style>
