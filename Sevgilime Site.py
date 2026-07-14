@@ -899,7 +899,19 @@ def render_archive() -> None:
                     st.markdown(f"<div class='arsiv-caption' style='margin-top: 10px;'>{video['baslik']}</div>", unsafe_allow_html=True)
                     st.video(video["link"])
 
-
+def render_teaser() -> None:
+    teaser_html = """
+    <div style="position: relative; width: 100%; height: 160px; border-radius: 18px; overflow: hidden; margin-bottom: 26px; border: 1px solid rgba(201,166,224,0.22); box-shadow: 0 24px 48px -28px rgba(0,0,0,0.7);">
+        <!-- Arka planda blurlu Türkiye haritası -->
+        <div style="position: absolute; top: -15px; left: -15px; right: -15px; bottom: -15px; background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Relief_Map_of_Turkey.png/800px-Relief_Map_of_Turkey.png'); background-size: cover; background-position: center; filter: blur(6px) brightness(0.35);"></div>
+        <!-- Üstündeki YAKINDA yazısı -->
+        <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10;">
+            <div style="font-family: 'Space Mono', monospace; font-size: 12px; letter-spacing: 5px; color: #B23A48; font-weight: 700; margin-bottom: 5px; text-transform: uppercase;">KPSS Haritalı Bilgi Sistemi</div>
+            <div style="font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 700; color: #E8D9F5; letter-spacing: 4px; text-shadow: 0 4px 15px rgba(0,0,0,0.8);">YAKINDA!</div>
+        </div>
+    </div>
+    """
+    st.markdown(teaser_html, unsafe_allow_html=True)
 # ---- kırmızı not kağıtları: bağımsız bir HTML/CSS/JS bileşeni ----
 # Bunu ayrı bir bileşen olarak yazmamızın nedeni: Streamlit her tıklamada
 # sunucu tarafında tüm sayfayı yeniden çalıştırıp yeniden çizer, bu da
@@ -1350,4 +1362,5 @@ with col_liste:
     render_todo()
 render_album()
 render_archive()
+render_teaser()
 render_note_sidebar()
