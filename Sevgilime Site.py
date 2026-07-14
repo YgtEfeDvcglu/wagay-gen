@@ -871,15 +871,19 @@ def render_archive() -> None:
     with st.container(key="archive_card"):
         st.markdown("<h3 class='arsiv-h3'>Anılar</h3>", unsafe_allow_html=True)
 
-        with st.expander("Slaytlar", expanded=False):
-            for slayt in SLIDE_LINKS:
-                st.markdown(f"<div class='arsiv-caption' style='margin-top: 10px;'>{slayt['baslik']}</div>", unsafe_allow_html=True)
-                components.iframe(slayt["link"], height=260)
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            with st.expander("Slaytlar", expanded=False):
+                for slayt in SLIDE_LINKS:
+                    st.markdown(f"<div class='arsiv-caption' style='margin-top: 10px;'>{slayt['baslik']}</div>", unsafe_allow_html=True)
+                    components.iframe(slayt["link"], height=260)
 
-        with st.expander("Videolar", expanded=False):
-            for video in VIDEO_LINKS:
-                st.markdown(f"<div class='arsiv-caption' style='margin-top: 10px;'>{video['baslik']}</div>", unsafe_allow_html=True)
-                st.video(video["link"])
+        with col2:
+            with st.expander("Videolar", expanded=False):
+                for video in VIDEO_LINKS:
+                    st.markdown(f"<div class='arsiv-caption' style='margin-top: 10px;'>{video['baslik']}</div>", unsafe_allow_html=True)
+                    st.video(video["link"])
 
 
 # ---- kırmızı not kağıtları: bağımsız bir HTML/CSS/JS bileşeni ----
