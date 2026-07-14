@@ -883,7 +883,7 @@ def render_todo() -> None:
 
 def render_archive() -> None:
     with st.container(key="archive_card"):
-        st.markdown("<h3 class='arsiv-h3'>Anılar</h3>", unsafe_allow_html=True)
+        st.markdown("<h3 class='arsiv-h3'>Anılarımız</h3>", unsafe_allow_html=True)
 
         col1, col2 = st.columns(2)
         
