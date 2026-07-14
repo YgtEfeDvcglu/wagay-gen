@@ -1192,7 +1192,6 @@ with col_sayac:
     render_movie_box()
 with col_liste:
     render_todo()
-
-render_archive()
 render_album()
+render_archive()
 render_note_sidebar()
