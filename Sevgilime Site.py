@@ -486,7 +486,7 @@ def render_counter() -> None:
         if is_anniversary_day and months_passed > 0:
             if months_passed % 12 == 0:
                 y = months_passed // 12
-                kutlama_mesaji = f"Senle {y}. yılımız olmuş benim bi tanem. Umarım senle nice {y} yıllara ve ömürleri. İyi ki benimlesin, sen benim her şeyimsin. SENİ SONSUZ SEVİYORUM"
+                kutlama_mesaji = f"Güzelim senle {y}. yılımız oldu benim Bİ TANEMM. Umarım senle nice {y} yıllara ve ömürlere OH MİS. İyi ki benimlesin, sen benim her şeyimsin. SENİ SONSUZ SEVİYORUM"
             else:
                 x = months_passed
                 kutlama_mesaji = f"{x}. ayımız kutlu olsun bebeğimbenim , {x}. ayımızda da {x}. yılımızda da beraber olalım OH ve de MİS. İYİ Kİ BENİMLESİN"
