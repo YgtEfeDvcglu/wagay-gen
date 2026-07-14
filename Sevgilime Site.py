@@ -469,7 +469,7 @@ except Exception as e:
 def render_header() -> None:
     st.markdown("<div class='arsiv-eyebrow'>💜 ÖZEL ARŞİV</div>", unsafe_allow_html=True)
     st.markdown("<h1 class='arsiv-h1'>Bizim Arşivimiz</h1>", unsafe_allow_html=True)
-    st.markdown("<div class='arsiv-tagline'>Gün, görev, kayıt ve not — hepsi burada.</div>", unsafe_allow_html=True)
+    st.markdown("<div class='arsiv-tagline'>Seninle olan ve olacak her şeyimiz olacak burada</div>", unsafe_allow_html=True)
 
 
 def render_counter() -> None:
