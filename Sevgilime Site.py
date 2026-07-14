@@ -892,7 +892,7 @@ def render_archive() -> None:
 # animasyonu her seferinde "kesip" baştan başlatır. Bu bileşen kendi
 # iframe'i içinde, Streamlit'ten bağımsız, saf JS ile çalışıyor — bu yüzden
 # animasyon pürüzsüz oluyor ve sayfanın geri kalanı hiç yeniden çizilmiyor.
-ddef render_album() -> None:
+def render_album() -> None:
     with st.container(key="album_card"):
         st.markdown("<h3 class='arsiv-h3'>Gelecek Çerçeveleri</h3>", unsafe_allow_html=True)
         st.markdown("<div class='arsiv-tagline'>Fiziken yan yana geldiğimizde bu boşluklar anılarımızla dolacak...</div>", unsafe_allow_html=True)
