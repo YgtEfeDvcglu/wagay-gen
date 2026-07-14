@@ -901,9 +901,9 @@ def render_archive() -> None:
 
 def render_teaser() -> None:
     teaser_html = """
-    <div style="position: relative; width: 100%; height: 160px; border-radius: 18px; overflow: hidden; margin-bottom: 26px; border: 1px solid rgba(201,166,224,0.22); box-shadow: 0 24px 48px -28px rgba(0,0,0,0.7); background: #1C1225;">
-        <!-- Arka planda soluk, renksiz ve blurlu Türkiye silüeti (Doğrudan SVG kullanıldı) -->
-        <div style="position: absolute; inset: 0; background-image: url('https://upload.wikimedia.org/wikipedia/commons/5/52/Turkey_location_map.svg'); background-size: contain; background-repeat: no-repeat; background-position: center; filter: grayscale(1) blur(2.5px); opacity: 0.35;"></div>
+    <div style="position: relative; width: 55%; height: 200px; border-radius: 18px; overflow: hidden; margin: 0 auto 26px auto; border: 1px solid rgba(201,166,224,0.22); box-shadow: 0 24px 48px -28px rgba(0,0,0,0.7); background: #1C1225;">
+        <!-- Arka planda soluk, renksiz Türkiye silüeti (Doğrudan SVG kullanıldı) -->
+        <div style="position: absolute; inset: 0; background-image: url('https://upload.wikimedia.org/wikipedia/commons/5/52/Turkey_location_map.svg'); background-size: 150%; background-repeat: no-repeat; background-position: center; filter: grayscale(1) blur(1px); opacity: 0.35;"></div>
         <!-- Üstündeki YAKINDA! yazısı -->
         <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 10;">
             <div style="font-family: 'Cormorant Garamond', serif; font-size: 46px; font-weight: 700; color: #E8D9F5; letter-spacing: 8px; text-shadow: 0 4px 15px rgba(0,0,0,0.9);">YAKINDA!</div>
