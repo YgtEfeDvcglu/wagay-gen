@@ -358,8 +358,22 @@ input[type="checkbox"] { accent-color: var(--lilac); }
 [data-testid="stProgress"] > div > div { background: linear-gradient(90deg, var(--lilac), var(--paper-red)); }
 
 hr { border-color: rgba(201,166,224,0.15); }
-/* Başlıkların yanındaki ataç ikonlarını kökünden yok eder */
-h1 a, h2 a, h3 a, h4 a, h5 a, h6 a, a.header-anchor {
+/* Başlıkların yanındaki ataç ikonlarını yok eden nükleer seçenek */
+.stMarkdown a.header-anchor,
+.stMarkdown h1 a,
+.stMarkdown h2 a,
+.stMarkdown h3 a,
+div[data-testid="stMarkdownContainer"] a.header-anchor {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+.stMarkdown a.header-anchor svg,
+.stMarkdown h1 a svg,
+.stMarkdown h2 a svg,
+.stMarkdown h3 a svg {
     display: none !important;
 }
 </style>
