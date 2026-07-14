@@ -484,14 +484,22 @@ def render_counter() -> None:
 
     with st.container(key="counter_card"):
         if is_anniversary_day and months_passed > 0:
+            if months_passed % 12 == 0:
+                y = months_passed // 12
+                kutlama_mesaji = f"Senle {y}. yılımız olmuş benim bi tanem. Umarım senle nice {y} yıllara ve ömürleri. İyi ki benimlesin, sen benim her şeyimsin. SENİ SONSUZ SEVİYORUM"
+            else:
+                x = months_passed
+                kutlama_mesaji = f"{x}. ayımız kutlu olsun bebeğimbenim , {x}. ayımızda da {x}. yılımızda da beraber olalım OH ve de MİS. İYİ Kİ BENİMLESİN"
+                
             st.markdown(
-                f"<div class='anniversary-banner'>🎉 Bugün {months_passed}. ay dönümümüz!</div>",
+                f"<div class='anniversary-banner' style='white-space: normal; line-height: 1.5; font-size: 14px; margin-bottom: 15px;'>🎉 {kutlama_mesaji}</div>",
                 unsafe_allow_html=True,
             )
+            
         st.markdown(
             f"<div class='counter-row'><span class='counter-number'>{delta_days}</span>"
             f"<span class='counter-unit'>gün</span></div>"
-            f"{months_passed} aydır birlikteyiz</div>",
+            f"<div class='counter-label'>{months_passed} aydır birlikteyiz</div>",
             unsafe_allow_html=True,
         )
 
