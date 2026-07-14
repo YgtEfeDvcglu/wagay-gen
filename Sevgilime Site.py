@@ -492,33 +492,48 @@ def render_music_box() -> None:
         st.markdown("<div class='arsiv-eyebrow'>GÜNÜN FREKANSI</div>", unsafe_allow_html=True)
         # Spotify'ın varsayılan embed yüksekliği 152, Apple Music'in 175'tir.
         components.iframe(gunun_sarkisi, height=152 if "spotify" in gunun_sarkisi else 175)
-@st.cache_data(ttl=86400) # Her buton tıklandığında siteyi yormaması için 24 saat önbelleğe alıyoruz
+# --- DEĞİŞECEK / EKLENECEK KISIM BAŞLANGICI ---
+@st.cache_data(ttl=86400)
 def get_movie_of_the_day(date_str):
-    import csv, random, re, requests
+    import csv, random, re
+    import urllib.request
     try:
-        # Excel'in bozduğu CSV dosyasını Python'un kendi kütüphanesiyle kusursuzca okuyoruz
-        with open("watchlist.csv", "r", encoding="utf-8") as f:
-            reader = csv.DictReader(f)
-            movies = [row for row in reader]
+        # 1. Excel'in bozduğu noktalı virgül ve görünmez BOM (utf-8-sig) sorunlarını otomatik çözer
+        with open("watchlist.csv", "r", encoding="utf-8-sig") as f:
+            ilk_satir = f.readline()
+            ayirici = ";" if ";" in ilk_satir else ","
+            f.seek(0)
+            reader = csv.DictReader(f, delimiter=ayirici)
+            # Boş satırları atlayarak filmleri listeye çeker
+            movies = [row for row in reader if row.get("Name")]
         
-        # O güne özel sabit rastgelelik
+        if not movies:
+            return "Hata: Liste okunamadı (Sütunlar bozuk)", "", "", "https://s.ltrbxd.com/static/img/empty-poster-250.8461d43a.png"
+
         rng = random.Random(datetime.date.today().toordinal())
         gunun_filmi = rng.choice(movies)
         
-        ad = gunun_filmi.get("Name", "")
+        ad = gunun_filmi.get("Name", "Bilinmeyen Film")
         link = gunun_filmi.get("Letterboxd URI", "")
         yil = gunun_filmi.get("Year", "")
         
-        # Letterboxd'a gidip afişi çekiyoruz (Scraping)
-        headers = {"User-Agent": "Mozilla/5.0"}
-        html = requests.get(link, headers=headers).text
-        # Sitenin JSON kodları arasındaki yüksek çözünürlüklü afiş linkini Regex ile yakalıyoruz
-        match = re.search(r'"image":"(https://a\.ltrbxd\.com/resized/.*?.jpg.*?)"', html)
-        afis = match.group(1) if match else "https://s.ltrbxd.com/static/img/empty-poster-250.8461d43a.png"
+        # 2. Harici kütüphane gerektirmeyen (built-in) urllib ile afişi çekiyoruz
+        afis = "https://s.ltrbxd.com/static/img/empty-poster-250.8461d43a.png"
+        if link:
+            req = urllib.request.Request(link, headers={"User-Agent": "Mozilla/5.0"})
+            try:
+                with urllib.request.urlopen(req) as response:
+                    html = response.read().decode('utf-8')
+                    match = re.search(r'"image":"(https://a\.ltrbxd\.com/resized/.*?.jpg.*?)"', html)
+                    if match: afis = match.group(1)
+            except:
+                pass # Siteden afiş çekilemezse varsayılan gri görselle devam eder
         
         return ad, yil, link, afis
     except Exception as e:
-        return None, None, None, None
+        # 3. Kod patlarsa saklanmasın, hatayı ekrana bassın ki sorunu görelim
+        return f"Sistem Hatası: {str(e)}", "", "", "https://s.ltrbxd.com/static/img/empty-poster-250.8461d43a.png"
+
 
 def render_movie_box() -> None:
     ad, yil, link, afis = get_movie_of_the_day(datetime.date.today().isoformat())
@@ -526,7 +541,6 @@ def render_movie_box() -> None:
     
     with st.container(key="movie_card"):
         st.markdown("<div class='arsiv-eyebrow'>GÜNÜN FİLMİ</div>", unsafe_allow_html=True)
-        # Afişi ve yazıları şık bir kart içinde gösteren özel HTML tasarımı
         html = f"""
         <div style="display: flex; gap: 15px; align-items: center; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; border: 1px solid rgba(201,166,224,0.2);">
             <img src="{afis}" style="width: 75px; border-radius: 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
@@ -535,7 +549,9 @@ def render_movie_box() -> None:
                 <a href="{link}" target="_blank" style="display: inline-block; margin-top: 8px; color: #1C1225; background: #C9A6E0; padding: 5px 12px; border-radius: 999px; text-decoration: none; font-size: 12px; font-weight: bold; font-family: 'Manrope', sans-serif; transition: opacity 0.2s;">Letterboxd'da İncele</a>
             </div>
         </div>
-        """        
+        """
+        st.markdown(html, unsafe_allow_html=True)
+# --- DEĞİŞECEK / EKLENECEK KISIM BİTİŞİ ---
 # ---- çalışma zamanlayıcısı: kronometre + geri sayım ----
 # Not kağıtları gibi bu da ayrı bir HTML/JS bileşeni. Saniyede bir
 # güncellenmesi gerekiyor; bunu Streamlit'in sunucu taraflı rerun'larıyla
