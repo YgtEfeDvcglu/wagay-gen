@@ -929,6 +929,7 @@ def render_album() -> None:
             height: 320px;
             display: flex;
             overflow: hidden;
+          }
           /* Albümün ortasındaki defter kıvrımı gölgesi */
           .album-container::before {
             content: '';
@@ -1080,139 +1081,6 @@ def render_album() -> None:
         </script>
         """
         components.html(album_html, height=410, scrolling=False)
-NOTE_WIDGET_TEMPLATE = """
-<div id="not-widget">
-<style>
-  #not-widget { font-family: 'Manrope', sans-serif; }
-  #not-buton {
-    width: 100%;
-    background: linear-gradient(135deg, #4E2A6B, #1C1225);
-    border: 1px solid rgba(201,166,224,0.4);
-    color: #E8D9F5;
-    border-radius: 999px;
-    padding: 10px 18px;
-    font-family: 'Manrope', sans-serif;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all .2s ease;
-  }
-  #not-buton:hover { background: #C9A6E0; color: #1C1225; border-color: #C9A6E0; }
-
-  #kagit-alani {
-    position: relative;
-    margin-top: 18px;
-    height: 340px;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-  #kagit-alani:empty::before {
-    content: "Henüz bir not okumadın. Butona bas.";
-    display: block;
-    color: rgba(232,217,245,0.35);
-    font-size: 13px;
-    padding-top: 24px;
-    text-align: center;
-  }
-
-  .kagit-konum {
-    position: absolute;
-    left: 50%;
-    width: 150px;
-    margin-left: -75px;
-  }
-  .kagit {
-    background: linear-gradient(160deg, #c9505c, #8e2836);
-    color: #fdeceb;
-    font-size: 12.5px;
-    line-height: 1.45;
-    padding: 16px 14px 14px 14px;
-    border-radius: 3px;
-    box-shadow: 0 12px 22px -10px rgba(0,0,0,0.65);
-    position: relative;
-    opacity: 0;
-    transform: translateY(-22px) scale(0.9);
-  }
-  .kagit.goster {
-    animation: dropIn .45s cubic-bezier(.2,.8,.3,1.05) forwards;
-  }
-  .kagit::before {
-    content: '';
-    position: absolute;
-    top: -6px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
-    background: #C9A6E0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-  }
-  @keyframes dropIn { to { opacity: 1; transform: translateY(0) scale(1); } }
-
-  #temizle-link {
-    display: inline-block;
-    margin-top: 8px;
-    font-size: 11px;
-    color: rgba(232,217,245,0.4);
-    text-decoration: none;
-    cursor: pointer;
-  }
-  #temizle-link:hover { color: #C9A6E0; }
-</style>
-
-<button id="not-buton">💌 Bir Not Oku</button>
-<div id="kagit-alani"></div>
-<a id="temizle-link" href="#">kağıtları topla</a>
-
-<script>
-  const notlar = __NOTLAR_JSON__;
-
-  function karistir(dizi) {
-    for (let i = dizi.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [dizi[i], dizi[j]] = [dizi[j], dizi[i]];
-    }
-    return dizi;
-  }
-
-  let havuz = karistir(notlar.slice());
-  let sayac = 0;
-  const alan = document.getElementById('kagit-alani');
-
-  document.getElementById('not-buton').addEventListener('click', function () {
-    if (havuz.length === 0) havuz = karistir(notlar.slice());
-    const metin = havuz.pop();
-    sayac += 1;
-
-    const konum = document.createElement('div');
-    konum.className = 'kagit-konum';
-    const aci = (Math.random() * 22 - 11).toFixed(1);
-    const dx = (Math.random() * 36 - 18).toFixed(0);
-    konum.style.transform = 'translateX(' + dx + 'px) rotate(' + aci + 'deg)';
-    konum.style.top = ((sayac - 1) * 14) + 'px';
-    konum.style.zIndex = String(sayac);
-
-    const kagit = document.createElement('div');
-    kagit.className = 'kagit';
-    kagit.textContent = metin;
-    konum.appendChild(kagit);
-    alan.appendChild(konum);
-
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () { kagit.classList.add('goster'); });
-    });
-    konum.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  });
-
-  document.getElementById('temizle-link').addEventListener('click', function (e) {
-    e.preventDefault();
-    alan.innerHTML = '';
-    sayac = 0;
-  });
-</script>
-</div>
-"""
 def get_messages_sheet():
     if not SHEETS_READY: return None
     worksheets = _sheet.spreadsheet.worksheets()
