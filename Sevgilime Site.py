@@ -509,9 +509,9 @@ def render_music_box() -> None:
     import random
     # Her gün için o güne özel sabit bir rastgelelik (seed) oluşturuyoruz.
     # Böylece şarkı gün boyu değişmez ama her gün listeden tamamen rastgele seçilir.
-    rng = random.Random(turkiye_bugunu().toordinal())
-    gunun_sarkisi = rng.choice(MUSIC_LINKS)
-    
+    #rng = random.Random(turkiye_bugunu().toordinal())
+    #gunun_sarkisi = rng.choice(MUSIC_LINKS)
+    gunun_sarkisi = "https://open.spotify.com/embed/track/29Xdknl9fhRsV0oOYyQOKy"
     with st.container(key="music_card"):
         st.markdown("<div class='arsiv-eyebrow'>GÜNÜN FREKANSI</div>", unsafe_allow_html=True)
         # Spotify'ın varsayılan embed yüksekliği 152, Apple Music'in 175'tir.
