@@ -534,7 +534,7 @@ def get_movie_of_the_day(date_str):
         if not movies:
             return "Hata: Liste okunamadı (Sütunlar bozuk)", "", "", "https://s.ltrbxd.com/static/img/empty-poster-250.8461d43a.png"
 
-        rng = random.Random(turkiye_bugunu().toordinal())
+        rng = random.Random(turkiye_bugunu().toordinal() + 1)
         gunun_filmi = rng.choice(movies)
         
         ad = gunun_filmi.get("Name", "Bilinmeyen Film")
